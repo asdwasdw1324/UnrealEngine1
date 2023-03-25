@@ -17,6 +17,9 @@ AMCharacter::AMCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
+	SpringArmComp->TargetArmLength = 2000.f;
+	SpringArmComp->SetRelativeRotation(FRotator(-70.f, 0.f, 0.f));
+
 }
 
 // Called when the game starts or when spawned
@@ -24,8 +27,8 @@ void AMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpringArmComp->TargetArmLength = 3000.f;
-	SpringArmComp->SetRelativeRotation(FRotator(70.f, 0.f, 0.f));
+	//SpringArmComp->TargetArmLength = 3000.f;
+	//SpringArmComp->SetRelativeRotation(FRotator(70.f, 0.f, 0.f));
 	
 }
 

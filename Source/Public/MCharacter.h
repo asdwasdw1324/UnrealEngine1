@@ -6,9 +6,6 @@
 #include "GameFramework/Character.h"
 #include "MCharacter.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
-
 UCLASS()
 class UNREALENGINE1_API AMCharacter : public ACharacter
 {
@@ -21,10 +18,10 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	USpringArmComponent *SpringArmComp;
+	class USpringArmComponent *SpringArmComp;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	UCameraComponent  *CameraComp;
+	class UCameraComponent  *CameraComp; 
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
