@@ -17,8 +17,8 @@ AMCharacter::AMCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
-	SpringArmComp->TargetArmLength = 2000.f;
-	SpringArmComp->SetRelativeRotation(FRotator(-70.f, 0.f, 0.f));
+	SpringArmComp->TargetArmLength = 200.f;
+	SpringArmComp->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
 
 }
 
@@ -27,9 +27,14 @@ void AMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//SpringArmComp->TargetArmLength = 3000.f;
-	//SpringArmComp->SetRelativeRotation(FRotator(70.f, 0.f, 0.f));
-	
+}
+
+void AMCharacter::MoveForward(float value) {
+	AddMovementInput(GetActorForwardVector(), value);
+}
+
+void AMCharacter::MoveRight(float value) {
+	AddMovementInput(GetActorRightVector(), value);
 }
 
 // Called every frame
@@ -43,6 +48,10 @@ void AMCharacter::Tick(float DeltaTime)
 void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AMCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 
 }
 
