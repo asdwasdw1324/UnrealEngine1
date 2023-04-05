@@ -13,5 +13,7 @@ UCLASS()
 class UNREALENGINE1_API AUnrealEngine1GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+	virtual void BeginPlay() override;
 	
 };

@@ -39,9 +39,9 @@ void ACameraDirector::Tick(float DeltaTime)
     TimeToNextCameraChange = TimeToNextCameraChange - DeltaTime;
 
     //每一帧画面打印TimeToNextCameraChange的值
-    const float DebugMessageDuration = 2.0f;
-    const FColor DebugMessageColor = FColor::Yellow;
-    GEngine->AddOnScreenDebugMessage(-1, DebugMessageDuration, DebugMessageColor, FString::Printf(TEXT("TimeToNextCameraChange: %.2f"), TimeToNextCameraChange));
+    //const float DebugMessageDuration = 2.0f;
+    //const FColor DebugMessageColor = FColor::Yellow;
+    //GEngine->AddOnScreenDebugMessage(-1, DebugMessageDuration, DebugMessageColor, FString::Printf(TEXT("TimeToNextCameraChange: %.2f"), TimeToNextCameraChange));
 
     if (TimeToNextCameraChange <= 0.0f) {
         TimeToNextCameraChange += TimeBetweenCameraChanges; // add current TimeToNextCameraChange value
