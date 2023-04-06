@@ -41,6 +41,10 @@ protected:
 	UFUNCTION()
 	void StopJump();
 
+	// 处理发射物射击的函数。
+	UFUNCTION()
+	void Fire();
+
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AMyProjectile> ProjectileClass;
 
@@ -50,11 +54,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
-	// 处理发射物射击的函数。
-	UFUNCTION()
-	void Fire();
 
 	// 枪口相对于摄像机位置的偏移。
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)

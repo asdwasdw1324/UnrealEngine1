@@ -35,4 +35,12 @@ public:
 	// 初始化射击方向上发射物速度的函数。
 	void FireInDirection(const FVector& ShootDirection);
 
+	// 发射物网格体
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UStaticMeshComponent* ProjectileMeshComponent;
+
+	// 发射物材质
+	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
+	UMaterialInstanceDynamic* ProjectileMaterialInstance;
+
 };
