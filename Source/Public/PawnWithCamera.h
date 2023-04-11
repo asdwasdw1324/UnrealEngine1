@@ -21,23 +21,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "SpringArm Configuration")
 	class USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Camera Configuration")
 	class UCameraComponent* CameraComp;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "StaticMesh Configuration")
 	class UStaticMeshComponent* StaticMeshComp;
 
 	//输入变量
-	FVector2D MovementInput;
-	FVector2D CameraInput;
-	float ZoomFactor;
-	bool bZoomingIn;
+	FVector2D MovementInput;//2D向量变量
+	FVector2D CameraInput;//2D向量变量
+	float ZoomFactor = 0;//放大系数
+	bool bZoomingIn;//是否放缩判断
 
 	//输入函数
-	// 输入函数
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void PitchCamera(float AxisValue);

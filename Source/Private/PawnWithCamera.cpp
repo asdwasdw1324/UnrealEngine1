@@ -87,11 +87,11 @@ void APawnWithCamera::Tick(float DeltaTime)
 		{
 			ZoomFactor -= DeltaTime / 0.25f;        //Zoom out over a quarter of a second
 		}
-		ZoomFactor = FMath::Clamp<float>(ZoomFactor, 0.0f, 1.0f);
+		ZoomFactor = FMath::Clamp<float>(ZoomFactor, 0.0f, 1.0f);//钳制放缩因子在0-1之间
 
 		//根据ZoomFactor来设置摄像机的视场和弹簧臂的长度
-		CameraComp->FieldOfView = FMath::Lerp<float>(90.0f, 60.0f, ZoomFactor);
-		SpringArmComp->TargetArmLength = FMath::Lerp<float>(400.0f, 300.0f, ZoomFactor);
+		CameraComp->FieldOfView = FMath::Lerp<float>(90.0f, 60.0f, ZoomFactor);//利用放缩因子对摄像机的视场进行Lerp计算，计算当前tick下的视场大小
+		SpringArmComp->TargetArmLength = FMath::Lerp<float>(400.0f, 300.0f, ZoomFactor);//利用放缩因子对弹簧臂的长度进行Lerp计算，计算当前tick下的弹簧臂长度
 	}
 
 	// 旋转Actor的偏转角度，由于摄像机与Actor相互绑定，因此摄像机也会偏转
