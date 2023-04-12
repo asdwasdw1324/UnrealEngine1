@@ -29,7 +29,7 @@ AMyProjectile::AMyProjectile()
 
 	if (!ProjectileMovementComponent)
 	{
-		// 使用此组件驱动发射物的移动。
+		// 使用此组件驱动发射物的移动。配置相关默认属性
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);//设置运动更新组件
 		ProjectileMovementComponent->InitialSpeed = 3000.0f;
@@ -40,6 +40,7 @@ AMyProjectile::AMyProjectile()
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;//重力影响缩放系数
 	}
 
+	//发射物组件配置静态网格体
 	if (!ProjectileMeshComponent)
 	{
 		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
@@ -50,16 +51,17 @@ AMyProjectile::AMyProjectile()
 		}
 	}
 
+	//发射物组件配置材质实例
 	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Game/StarterContent/Materials/M_Metal_Steel.M_Metal_Steel'"));
 	if (Material.Succeeded())
 	{
-		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
+		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);//新建一个材质实例，再将该实例的材质设置给所需的网格体
 	}
 	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 	ProjectileMeshComponent->SetupAttachment(RootComponent);
 	
-	// 3 秒后删除发射物。
+	// 该类产生后的生命周期为3秒
 	InitialLifeSpan = 3.0f;
 }
 
@@ -91,5 +93,5 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 	}
 
-	Destroy();
+	Destroy();//立即销毁
 }

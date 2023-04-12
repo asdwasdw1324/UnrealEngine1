@@ -29,6 +29,7 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	class USphereComponent* CollisionComponent;
 
+	//发射物移动组件
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
 
@@ -37,11 +38,11 @@ public:
 
 	// 发射物网格体
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	UStaticMeshComponent* ProjectileMeshComponent;
+	class UStaticMeshComponent* ProjectileMeshComponent;
 
 	// 发射物材质
-	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
-	UMaterialInstanceDynamic* ProjectileMaterialInstance;
+	UPROPERTY(VisibleDefaultsOnly, Category = Materia)
+	class UMaterialInstanceDynamic* ProjectileMaterialInstance;
 
 	// 当发射物击中物体时会调用的函数。
 	UFUNCTION()

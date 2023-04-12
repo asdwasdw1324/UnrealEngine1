@@ -105,6 +105,8 @@ void AMCharacter::Fire()
 		// 使目标方向略向上倾斜。
 		FRotator MuzzleRotation = CameraRotation;
 		MuzzleRotation.Pitch += 10.0f;
+		//至此确定了发射物的位置和旋转方向
+
 
 		UWorld* World = GetWorld();
 		if (World)
