@@ -19,12 +19,15 @@ AMCharacter::AMCharacter()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");//为指针CameraComp指定UCameraComponent的实例，命名为CameraComp并且附在SpringArmComp下
 	check(CameraComp != nullptr);
-	CameraComp->SetupAttachment(SpringArmComp);
+	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 	//CameraComp->SetupAttachment(CastChecked<USceneComponent, UCapsuleComponent>(GetCapsuleComponent()));//此注释是单独生成CameraComp时并将其附在CapsuleComponent时的情况，用到了强制转换函数，但其实并非必要，可直接(GetCapsuleComponent()),因为CapusleComponent类型是USceneComponent的子类
 
-	SpringArmComp->TargetArmLength = 300.f;
-	SpringArmComp->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));//由于后面bUsePawnControlRotation = true，所以其旋转角度设置为任意数值均不影响
+	SpringArmComp->TargetArmLength = 300.f;//SpringArm默认参数设置
+	SpringArmComp->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
+	SpringArmComp->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f));
 	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->CameraLagSpeed = 4.0f;
 
 	//CameraComp->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 	//CameraComp->bUsePawnControlRotation = true;
@@ -37,7 +40,7 @@ void AMCharacter::BeginPlay()
 
 	check(GEngine != nullptr);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using FPSCharacter!"));//游戏开始时在屏幕上打印相关字符串，并设置其颜色为红色，停留5秒
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using TPSCharacter!"));//游戏开始时在屏幕上打印相关字符串，并设置其颜色为红色，停留5秒
 
 }
 
@@ -64,6 +67,16 @@ void AMCharacter::StopJump()
 	bPressedJump = false;
 }
 
+void AMCharacter::ToggleFreeCameraModeFree() {
+	bFreeCameraMode = true;
+
+}
+
+void AMCharacter::ToggleFreeCameraModeLock() {
+	bFreeCameraMode = false;
+
+}
+
 // Called every frame
 void AMCharacter::Tick(float DeltaTime)
 {
@@ -83,6 +96,8 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMCharacter::StopJump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
+	PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
+	PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
 }
 
 //射击开火函数的定义
@@ -97,7 +112,7 @@ void AMCharacter::Fire()
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 		// 设置MuzzleOffset，在略靠近摄像机前生成发射物。
-		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
+		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);//该坐标是一个相对位置坐标
 
 		// 将MuzzleOffset从摄像机空间变换到世界空间。
 		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);

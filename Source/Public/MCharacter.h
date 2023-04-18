@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明指向CameraComponent类的指针，名为CameraComp，放置在Camera的菜单下（注意include类的头文件）
 	class UCameraComponent  *CameraComp; 
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
+	bool bFreeCameraMode = false;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -41,6 +44,12 @@ protected:
 
 	UFUNCTION()
 	void StopJump();
+
+	UFUNCTION()
+	void ToggleFreeCameraModeFree();
+
+	UFUNCTION()
+	void ToggleFreeCameraModeLock();
 
 	// 声明发射物射击的函数。
 	UFUNCTION()
