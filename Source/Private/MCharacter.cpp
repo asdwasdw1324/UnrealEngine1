@@ -25,7 +25,7 @@ AMCharacter::AMCharacter()
 	SpringArmComp->TargetArmLength = 300.f;//SpringArm默认参数设置
 	SpringArmComp->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
 	SpringArmComp->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f));
-	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bUsePawnControlRotation = false;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 4.0f;
 
@@ -82,6 +82,24 @@ void AMCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float MouseX, MouseY;
+	GetWorld()->GetFirstPlayerController()->GetInputMouseDelta(MouseX, MouseY);
+
+	if (bFreeCameraMode == true) 
+	{
+		FRotator NewRotation = SpringArmComp->GetComponentRotation();
+		NewRotation.Yaw += MouseX * 0.1f;
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch - MouseY * 0.1f, -80.0f, 80.0f);
+
+		SpringArmComp->SetWorldRotation(NewRotation);
+	}
+	if (bFreeCameraMode == false)
+	{
+		FRotator NewRotation = SpringArmComp->GetRelativeRotation() + FRotator(0, MouseX * 0.1f, 0);
+		NewRotation.Pitch = FMath::ClampAngle(NewRotation.Pitch, -90.0f, 90.0f);
+		NewRotation.Yaw = FMath::ClampAngle(NewRotation.Yaw, -90.0f, 90.0f);
+		SpringArmComp->SetRelativeRotation(NewRotation);
+	}
 }
 
 // Called to bind functionality to input

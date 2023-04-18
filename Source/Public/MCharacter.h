@@ -26,7 +26,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明指向CameraComponent类的指针，名为CameraComp，放置在Camera的菜单下（注意include类的头文件）
 	class UCameraComponent  *CameraComp; 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明自由相机视角的布尔变量
 	bool bFreeCameraMode = false;
 
 	// Called when the game starts or when spawned
@@ -57,7 +57,7 @@ protected:
 
 	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class AMyProjectile> ProjectileClass;
+	TSubclassOf<class AMyProjectile> ProjectileClass;//AActor---AMyProjectile---ProjectileClass
 
 public:	
 	// Called every frame
