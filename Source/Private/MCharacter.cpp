@@ -4,6 +4,8 @@
 #include "MCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/characterMovementComponent.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AMCharacter::AMCharacter()
@@ -11,37 +13,32 @@ AMCharacter::AMCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");//初始化根组件
+	//RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");//初始化根组件,针对Character类会出错
 	
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");//为指针SpringArmComp指定USpringArmComponent的实例，命名为SpringArmComp并且附在RootComponent下
+	//为指针SpringArmComp指定USpringArmComponent的实例，命名为SpringArmComp并且附在RootComponent下
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	check(SpringArmComp != nullptr);
 	SpringArmComp->SetupAttachment(RootComponent);
-
-	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");//为指针CameraComp指定UCameraComponent的实例，命名为CameraComp并且附在SpringArmComp下
-	check(CameraComp != nullptr);
-	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
-	//CameraComp->SetupAttachment(CastChecked<USceneComponent, UCapsuleComponent>(GetCapsuleComponent()));//此注释是单独生成CameraComp时并将其附在CapsuleComponent时的情况，用到了强制转换函数，但其实并非必要，可直接(GetCapsuleComponent()),因为CapusleComponent类型是USceneComponent的子类
-
-	SpringArmComp->TargetArmLength = 300.f;//SpringArm默认参数设置
-	SpringArmComp->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
-	SpringArmComp->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f));
-	SpringArmComp->bUsePawnControlRotation = false;
+	//SpringArm默认参数设置
+	SpringArmComp->TargetArmLength = 300.f;
+	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 4.0f;
 
-	//CameraComp->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
-	//CameraComp->bUsePawnControlRotation = true;
+	//为指针CameraComp指定UCameraComponent的实例，命名为CameraComp并且附在SpringArmComp下
+	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
+	check(CameraComp != nullptr);
+	CameraComp->SetupAttachment(SpringArmComp);
+	//CameraComp->SetupAttachment(CastChecked<USceneComponent, UCapsuleComponent>(GetCapsuleComponent()));
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
 }
 
 // Called when the game starts or when spawned
 void AMCharacter::BeginPlay()
 {
 	Super::BeginPlay();//继承BeginPlay函数
-
-	check(GEngine != nullptr);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using TPSCharacter!"));//游戏开始时在屏幕上打印相关字符串，并设置其颜色为红色，停留5秒
-
 }
 
 //4个移动操作函数的定义
@@ -69,37 +66,16 @@ void AMCharacter::StopJump()
 
 void AMCharacter::ToggleFreeCameraModeFree() {
 	bFreeCameraMode = true;
-
 }
 
 void AMCharacter::ToggleFreeCameraModeLock() {
 	bFreeCameraMode = false;
-
 }
 
 // Called every frame
 void AMCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	float MouseX, MouseY;
-	GetWorld()->GetFirstPlayerController()->GetInputMouseDelta(MouseX, MouseY);
-
-	if (bFreeCameraMode == true) 
-	{
-		FRotator NewRotation = SpringArmComp->GetComponentRotation();
-		NewRotation.Yaw += MouseX * 0.1f;
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch - MouseY * 0.1f, -80.0f, 80.0f);
-
-		SpringArmComp->SetWorldRotation(NewRotation);
-	}
-	if (bFreeCameraMode == false)
-	{
-		FRotator NewRotation = SpringArmComp->GetRelativeRotation() + FRotator(0, MouseX * 0.1f, 0);
-		NewRotation.Pitch = FMath::ClampAngle(NewRotation.Pitch, -90.0f, 90.0f);
-		NewRotation.Yaw = FMath::ClampAngle(NewRotation.Yaw, -90.0f, 90.0f);
-		SpringArmComp->SetRelativeRotation(NewRotation);
-	}
 }
 
 // Called to bind functionality to input
@@ -122,15 +98,15 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void AMCharacter::Fire()
 {
 	// 试图发射发射物。
-	if (ProjectileClass)
+	if (ProjectileClass1 || ProjectileClass2 || ProjectileClass3)
 	{
-		// 获取摄像机的位置和旋转方向
+		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
 		FVector CameraLocation;
 		FRotator CameraRotation;
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
-		// 设置MuzzleOffset，在略靠近摄像机前生成发射物。
-		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);//该坐标是一个相对位置坐标
+		// 设置MuzzleOffset，在略靠近摄像机前生成发射物。该坐标是一个相对位置坐标
+		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
 
 		// 将MuzzleOffset从摄像机空间变换到世界空间。
 		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
@@ -138,7 +114,7 @@ void AMCharacter::Fire()
 		// 使目标方向略向上倾斜。
 		FRotator MuzzleRotation = CameraRotation;
 		MuzzleRotation.Pitch += 10.0f;
-		//至此确定了发射物的位置和旋转方向
+		//至此确定了发射物的位置和旋转方向，以MuzzleLocation和MuzzleRotation为具体参数
 
 
 		UWorld* World = GetWorld();
@@ -148,8 +124,21 @@ void AMCharacter::Fire()
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
 
-			// 在枪口位置生成发射物。
-			AMyProjectile* Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			AMyProjectile* Projectile = nullptr;
+
+			// 在枪口位置生成发射物,定义名为Projectile的指向AMyProjectile的指针变量
+			if (ProjectileClass1) 
+			{
+				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass1, MuzzleLocation, MuzzleRotation, SpawnParams);
+			}
+			else if (ProjectileClass2)
+			{
+				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass2, MuzzleLocation, MuzzleRotation, SpawnParams);
+			}
+			else if (ProjectileClass3)
+			{
+				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass3, MuzzleLocation, MuzzleRotation, SpawnParams);
+			}
 			if (Projectile)
 			{
 				// 设置发射物的初始轨迹。
@@ -157,5 +146,10 @@ void AMCharacter::Fire()
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}
+	}
+	else 
+	{
+		check(GEngine != nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Nothing to Fire!"));
 	}
 }

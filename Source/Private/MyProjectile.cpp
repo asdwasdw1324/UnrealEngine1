@@ -22,7 +22,7 @@ AMyProjectile::AMyProjectile()
 		// 组件击中某物时调用的事件。
 		CollisionComponent->OnComponentHit.AddDynamic(this, &AMyProjectile::OnHit);
 		// 设置球体的碰撞半径。
-		CollisionComponent->InitSphereRadius(50.0f);
+		CollisionComponent->InitSphereRadius(5.0f);
 		// 将根组件设置为碰撞组件。
 		RootComponent = CollisionComponent;
 	}
@@ -52,11 +52,12 @@ AMyProjectile::AMyProjectile()
 	}
 
 	//发射物组件配置材质实例
-	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Game/StarterContent/Materials/M_Metal_Steel.M_Metal_Steel'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
 	if (Material.Succeeded())
 	{
 		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);//新建一个材质实例，再将该实例的材质设置给所需的网格体
 	}
+	
 	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 	ProjectileMeshComponent->SetupAttachment(RootComponent);
@@ -80,9 +81,9 @@ void AMyProjectile::Tick(float DeltaTime)
 }
 
 // 初始化射击方向上发射物速度的函数。
-void AMyProjectile::FireInDirection(const FVector& ShootDirection) //常数类FVector引用类型三维参数作为射击方向
+void AMyProjectile::FireInDirection(const FVector& ShootDirection) //引用类型的常量三维向量作为射击方向
 {
-	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;//方向*速度大小
 }
 
 // 当发射物击中物体时会调用的函数。

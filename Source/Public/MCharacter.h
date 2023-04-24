@@ -55,9 +55,18 @@ protected:
 	UFUNCTION()
 	void Fire();
 
-	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class AMyProjectile> ProjectileClass;//AActor---AMyProjectile---ProjectileClass
+	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1
+	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfiguration)
+	TSubclassOf<class AMyProjectile> ProjectileClass1;//AActor---AMyProjectile---ProjectileClass1
+	
+	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfiguration)
+	TSubclassOf<class AMyProjectile> ProjectileClass2;
+	
+	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfiguration)
+	TSubclassOf<class AMyProjectile> ProjectileClass3;
+
+	UPROPERTY(EditAnywhere, Category = ProjectileConfiguration)
+	class AMyProjectile* ProjectileObject;
 
 public:	
 	// Called every frame
