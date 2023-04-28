@@ -24,20 +24,22 @@ AExplosiveActor::AExplosiveActor()
 		MeshComp->SetStaticMesh(Mesh.Object);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
-	if (Material.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForExplosiveActor(TEXT("/Script/Engine.Material'/Game/StarterContent/Materials/M_Rock_Marble_Polished.M_Rock_Marble_Polished'"));
+	if (MaterialForExplosiveActor.Succeeded())
 	{
-		ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, MeshComp);
+		ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(MaterialForExplosiveActor.Object, MeshComp);
 	}
 	
+	MeshComp->SetMaterial(0, ExplosiveActorMaterialInstance);
+
 	ForceComp = CreateDefaultSubobject<URadialForceComponent>("ForceComp");
 	ForceComp->SetupAttachment(MeshComp);
-	ForceComp->SetAutoActivate(false);
+	ForceComp->SetAutoActivate(true);
 
 	ForceComp->Radius = 750.0f;
-	ForceComp->ImpulseStrength = 2500.0f; // Alternative: 200000.0 if bImpulseVelChange = false
+	ForceComp->ImpulseStrength = 200000.0f; // Alternative: 200000.0 if bImpulseVelChange = false
 	// Optional, ignores 'Mass' of other objects (if false, the impulse strength will be much higher to push most objects depending on Mass)
-	ForceComp->bImpulseVelChange = true;
+	ForceComp->bImpulseVelChange = false;
 
 	// Optional, default constructor of component already adds 4 object types to affect, excluding WorldDynamic
 	ForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);

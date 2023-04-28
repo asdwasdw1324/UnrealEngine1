@@ -52,10 +52,10 @@ AMyProjectile::AMyProjectile()
 	}
 
 	//发射物组件配置材质实例
-	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
-	if (Material.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForProjectile(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
+	if (MaterialForProjectile.Succeeded())
 	{
-		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);//新建一个材质实例，再将该实例的材质设置给所需的网格体
+		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(MaterialForProjectile.Object, ProjectileMeshComponent);//新建一个材质实例，再将该实例的材质设置给所需的网格体
 	}
 	
 	ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
