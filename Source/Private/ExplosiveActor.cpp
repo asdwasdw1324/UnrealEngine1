@@ -17,7 +17,7 @@ AExplosiveActor::AExplosiveActor()
 	MeshComp->SetSimulatePhysics(true);
 	RootComponent = MeshComp;
 
-	//可随意替换像作为爆炸物的静态网格体
+	//可随意替换作为爆炸物的静态网格体
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
 	if (Mesh.Succeeded())
 	{

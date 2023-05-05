@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "MyProjectile.h"
+#include "SInteractionComponent.h"
 #include "MCharacter.generated.h"
 
 UCLASS()
@@ -25,6 +26,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明指向CameraComponent类的指针，名为CameraComp，放置在Camera的菜单下（注意include类的头文件）
 	class UCameraComponent  *CameraComp; 
+
+	UPROPERTY(VisibleAnywhere, Category = "Interaction")
+	class USInteractionComponent* InteractionComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明自由相机视角的布尔变量
 	bool bFreeCameraMode = false;
@@ -50,6 +54,9 @@ protected:
 
 	UFUNCTION()
 	void ToggleFreeCameraModeLock();
+
+	UFUNCTION()
+	void PrimaryInteract();
 
 	// 声明发射物射击的函数。
 	UFUNCTION()
