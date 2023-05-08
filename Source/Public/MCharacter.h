@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "MyProjectile.h"
@@ -21,16 +22,20 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明指向USpringArmComponent类的指针，名为SpringArmComp，放置在Camera的菜单下（注意include类的头文件）
+	//声明指向USpringArmComponent类的指针，名为SpringArmComp，放置在Camera的菜单下（注意include类的头文件）
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	class USpringArmComponent *SpringArmComp;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明指向CameraComponent类的指针，名为CameraComp，放置在Camera的菜单下（注意include类的头文件）
+	//声明指向UCameraComponent类的指针，名为CameraComp，放置在Camera的菜单下（注意include类的头文件）
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	class UCameraComponent  *CameraComp; 
 
+	//声明指向USInteractionComponent类的指针，名为Interaction（注意include类的头文件）
 	UPROPERTY(VisibleAnywhere, Category = "Interaction")
 	class USInteractionComponent* InteractionComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")//声明自由相机视角的布尔变量
+	//声明自由相机视角的布尔变量
+	UPROPERTY(EditAnywhere, Category = "Camera")
 	bool bFreeCameraMode = false;
 
 	// Called when the game starts or when spawned
@@ -58,22 +63,22 @@ protected:
 	UFUNCTION()
 	void PrimaryInteract();
 
-	// 声明发射物射击的函数。
 	UFUNCTION()
 	void Fire();
 
-	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1
-	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfiguration)
-	TSubclassOf<class AMyProjectile> ProjectileClass1;//AActor---AMyProjectile---ProjectileClass1
+	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1/2/3
+	//AActor---AMyProjectile---ProjectileClass1/2/3
+	UPROPERTY(EditDefaultsOnly, Category = Attack)
+	TSubclassOf<class AMyProjectile> ProjectileClass1;
 	
-	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfiguration)
+	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<class AMyProjectile> ProjectileClass2;
 	
-	UPROPERTY(EditDefaultsOnly, Category = ProjectileConfiguration)
+	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<class AMyProjectile> ProjectileClass3;
 
-	UPROPERTY(EditAnywhere, Category = ProjectileConfiguration)
-	class AMyProjectile* ProjectileObject;
+	UPROPERTY(EditAnywhere, Category = Attack)
+	class UAnimMontage* AttackAnim;;
 
 public:	
 	// Called every frame

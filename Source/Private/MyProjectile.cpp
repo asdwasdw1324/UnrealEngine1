@@ -62,8 +62,8 @@ AMyProjectile::AMyProjectile()
 	ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 	ProjectileMeshComponent->SetupAttachment(RootComponent);
 	
-	// 该类产生后的生命周期为3秒
-	InitialLifeSpan = 3.0f;
+	// 该类产生后的生命周期为5秒
+	InitialLifeSpan = 5.0f;
 }
 
 // Called when the game starts or when spawned

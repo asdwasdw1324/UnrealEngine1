@@ -2,6 +2,7 @@
 
 
 #include "SInteractionComponent.h"
+#include "DrawDebugHelpers.h"
 #include "MyInterface.h"
 
 // Sets default values for this component's properties
@@ -43,20 +44,34 @@ void USInteractionComponent::PrimaryInteract()
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-
 	FVector End = EyeLocation + (EyeRotation.Vector()*1000);
 
-	FHitResult Hit;
+	//FHitResult Hit;
+	//bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectiveQueryParams);
 	
-	GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectiveQueryParams);
+	TArray<FHitResult> Hits;
+	float Radius = 30.f;
 
-	AActor* HitActor = Hit.GetActor();
-	if (HitActor)
+	FCollisionShape Shape;
+	Shape.SetSphere(Radius);
+
+	bool bBlockingHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectiveQueryParams, Shape);
+
+	FColor LineColor = bBlockingHit ? FColor::Green : FColor::Red;
+
+	
+	for (FHitResult Hit : Hits) 
 	{
-		if (HitActor->Implements<UMyInterface>())
+		AActor* HitActor = Hit.GetActor();
+		if (HitActor)
 		{
-			APawn* MyPawn = Cast<APawn>(MyOwner);
-			IMyInterface::Execute_Interact(HitActor, MyPawn);
+			if (HitActor->Implements<UMyInterface>())
+			{
+				APawn* MyPawn = Cast<APawn>(MyOwner);
+				IMyInterface::Execute_Interact(HitActor, MyPawn);
+			}
 		}
+		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor,false, 2.0f, 1.0f);
 	}
+	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 2.0f);
 }

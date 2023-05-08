@@ -2,10 +2,7 @@
 
 
 #include "MCharacter.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/characterMovementComponent.h"
-#include "SInteractionComponent.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -14,7 +11,8 @@ AMCharacter::AMCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");//初始化根组件,针对Character类会出错
+	//初始化根组件,针对Character类会出错
+	//RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");
 	
 	//为指针SpringArmComp指定USpringArmComponent的实例，命名为SpringArmComp并且附在RootComponent下
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
@@ -30,11 +28,12 @@ AMCharacter::AMCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	check(CameraComp != nullptr);
 	CameraComp->SetupAttachment(SpringArmComp);
-	//CameraComp->SetupAttachment(CastChecked<USceneComponent, UCapsuleComponent>(GetCapsuleComponent()));
 
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
 
+	
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 }
 
@@ -128,13 +127,15 @@ void AMCharacter::Fire()
 		MuzzleRotation.Pitch += 10.0f;
 		//至此确定了发射物的位置和旋转方向，以MuzzleLocation和MuzzleRotation为具体参数
 
-
+		PlayAnimMontage(AttackAnim);
+		
 		UWorld* World = GetWorld();
 		if (World)
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 			AMyProjectile* Projectile = nullptr;
 
@@ -153,7 +154,7 @@ void AMCharacter::Fire()
 			}
 			if (Projectile)
 			{
-				// 设置发射物的初始轨迹。
+				// 在生成发射物之后设置发射物的初始轨迹，调用FireInDirection函数
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
 			}
