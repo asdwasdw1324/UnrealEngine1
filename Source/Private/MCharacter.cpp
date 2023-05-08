@@ -111,20 +111,24 @@ void AMCharacter::Fire()
 	// 试图发射发射物。
 	if (ProjectileClass1 || ProjectileClass2 || ProjectileClass3)
 	{
+		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
+		FRotator MuzzleRotation = GetControlRotation();
+		FTransform spawnTM = FTransform(MuzzleRotation, MuzzleLocation);
+		
 		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
-		FVector CameraLocation;
-		FRotator CameraRotation;
-		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		//FVector CameraLocation;
+		//FRotator CameraRotation;
+		//GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 		// 设置MuzzleOffset，在略靠近摄像机前生成发射物。该坐标是一个相对位置坐标
-		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
+		//MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
 
 		// 将MuzzleOffset从摄像机空间变换到世界空间。
-		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		//FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
 
 		// 使目标方向略向上倾斜。
-		FRotator MuzzleRotation = CameraRotation;
-		MuzzleRotation.Pitch += 10.0f;
+		//FRotator MuzzleRotation = CameraRotation;
+		//MuzzleRotation.Pitch += 10.0f;
 		//至此确定了发射物的位置和旋转方向，以MuzzleLocation和MuzzleRotation为具体参数
 
 		PlayAnimMontage(AttackAnim);

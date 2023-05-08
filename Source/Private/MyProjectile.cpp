@@ -25,6 +25,11 @@ AMyProjectile::AMyProjectile()
 		CollisionComponent->InitSphereRadius(5.0f);
 		// 将根组件设置为碰撞组件。
 		RootComponent = CollisionComponent;
+
+		//CollisionComponent->SetCollisionObjectType(ECC_WorldDynamic);
+		//CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		//CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		CollisionComponent->SetCollisionProfileName("Projectile");
 	}
 
 	if (!ProjectileMovementComponent)
