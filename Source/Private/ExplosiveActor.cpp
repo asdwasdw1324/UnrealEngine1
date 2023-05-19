@@ -24,12 +24,11 @@ AExplosiveActor::AExplosiveActor()
 		MeshComp->SetStaticMesh(Mesh.Object);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForExplosiveActor(TEXT("/Script/Engine.Material'/Game/StarterContent/Materials/M_Rock_Marble_Polished.M_Rock_Marble_Polished'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForExplosiveActor(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
 	if (MaterialForExplosiveActor.Succeeded())
 	{
 		ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(MaterialForExplosiveActor.Object, MeshComp);
 	}
-	
 	MeshComp->SetMaterial(0, ExplosiveActorMaterialInstance);
 
 	ForceComp = CreateDefaultSubobject<URadialForceComponent>("ForceComp");

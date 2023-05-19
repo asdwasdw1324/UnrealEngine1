@@ -25,9 +25,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class URadialForceComponent* ForceComp;
 
+	UFUNCTION(BlueprintCallable)
 	virtual void PostInitializeComponents() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 public:	
 	// Called every frame
