@@ -22,7 +22,7 @@ void USInteractionComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 }
 
 

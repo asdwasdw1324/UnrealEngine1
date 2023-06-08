@@ -41,6 +41,8 @@ AMCharacter::AMCharacter()
 void AMCharacter::BeginPlay()
 {
 	Super::BeginPlay();//继承BeginPlay函数
+
+	UE_LOG(LogTemp, Warning, TEXT("This is a warning"));
 }
 
 //4个移动操作函数的定义

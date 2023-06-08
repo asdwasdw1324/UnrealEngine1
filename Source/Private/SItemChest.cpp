@@ -27,7 +27,7 @@ void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 void ASItemChest::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

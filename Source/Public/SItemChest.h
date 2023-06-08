@@ -26,9 +26,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, Category = TreasureObj)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TreasureObj)
 	class UStaticMeshComponent* BaseMesh;
-	UPROPERTY(VisibleAnywhere, Category = TreasureObj)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TreasureObj)
 	class UStaticMeshComponent* LidMesh;
 
 public:	

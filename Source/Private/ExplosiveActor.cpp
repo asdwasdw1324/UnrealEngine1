@@ -24,16 +24,16 @@ AExplosiveActor::AExplosiveActor()
 		MeshComp->SetStaticMesh(Mesh.Object);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForExplosiveActor(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
-	if (MaterialForExplosiveActor.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
+	if (Material.Succeeded())
 	{
-		ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(MaterialForExplosiveActor.Object, MeshComp);
+		ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, MeshComp);
+		MeshComp->SetMaterial(0, ExplosiveActorMaterialInstance);
 	}
-	MeshComp->SetMaterial(0, ExplosiveActorMaterialInstance);
 
 	ForceComp = CreateDefaultSubobject<URadialForceComponent>("ForceComp");
 	ForceComp->SetupAttachment(MeshComp);
-	ForceComp->SetAutoActivate(true);
+	ForceComp->SetAutoActivate(false);
 
 	ForceComp->Radius = 750.0f;
 	ForceComp->ImpulseStrength = 200000.0f; // Alternative: 200000.0 if bImpulseVelChange = false
@@ -74,12 +74,8 @@ void AExplosiveActor::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Othe
 	ForceComp->FireImpulse();
 
 	UE_LOG(LogTemp, Log, TEXT("OnActorHit in Explosive Barrel"));
-
-	// %s = string
-	// %f = float
-	// logs: "OtherActor: MyActor_1, at gametime: 124.4" 
 	UE_LOG(LogTemp, Warning, TEXT("OtherActor: %s, at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
 
 	FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
-	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
+	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true, 3.0f);
 }
