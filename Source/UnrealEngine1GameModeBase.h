@@ -14,6 +14,9 @@ class UNREALENGINE1_API AUnrealEngine1GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	AUnrealEngine1GameModeBase();
+
 	virtual void BeginPlay() override;
 	
 };
