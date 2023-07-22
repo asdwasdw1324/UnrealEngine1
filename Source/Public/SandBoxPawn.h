@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UCollidingPawnMovementComponent;
 
 UCLASS()
 class UNREALENGINE1_API ASandBoxPawn : public APawn
@@ -29,6 +30,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UCollidingPawnMovementComponent* SandBoxMovementComponent;
+
+	virtual UPawnMovementComponent* GetMovementComponent() const override;
+
 
 	UPROPERTY(EditAnywhere)
 	float Velocity = 300.0f;

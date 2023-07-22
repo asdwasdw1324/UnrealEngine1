@@ -3,6 +3,8 @@
 
 #include "SandBoxPawn.h"
 #include "Components/InputComponent.h"
+#include "Components/SceneComponent.h"
+#include "CollidingPawnMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -30,26 +32,40 @@ ASandBoxPawn::ASandBoxPawn()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
+	SandBoxMovementComponent = CreateDefaultSubobject<UCollidingPawnMovementComponent>(TEXT("SandBoxMovementComponent"));
+	SandBoxMovementComponent->UpdatedComponent = RootComponent;
+	//SandBoxMovementComponent->SetUpdatedComponent(RootComponent);
+	
+	AutoPossessPlayer = EAutoReceiveInput::Disabled;
+	AutoPossessAI = EAutoPossessAI::Disabled;
+}
+
+UPawnMovementComponent* ASandBoxPawn::GetMovementComponent() const
+{
+	return SandBoxMovementComponent;
 }
 
 void ASandBoxPawn::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	//UE_LOG(LogSandBoxPawn, Error, TEXT("%s possessed %s"), *GetName(), *NewController->GetName());
+	UE_LOG(LogSandBoxPawn, Error, TEXT("%s Possessed %s"), *GetName(), *NewController->GetName());
 }
 
 void ASandBoxPawn::UnPossessed()
 {
 	Super::UnPossessed();
 
-	//UE_LOG(LogSandBoxPawn, Warning, TEXT("%s possessed"), *GetName());
+	UE_LOG(LogSandBoxPawn, Warning, TEXT("%s Unpossessed"), *GetName());
 }
 
 // Called when the game starts or when spawned
 void ASandBoxPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SandBoxMovementComponent = Cast<UCollidingPawnMovementComponent>(GetMovementComponent());
+
 	
 }
 
@@ -58,7 +74,7 @@ void ASandBoxPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CustomMove(DeltaTime, Velocity, VelocityVector);
+	//CustomMove(DeltaTime, Velocity, VelocityVector);
 
 }
 
@@ -73,25 +89,33 @@ void ASandBoxPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ASandBoxPawn::MoveForward(float value)
 {
-	UE_LOG(LogSandBoxPawn, Display, TEXT("MoveForward value is: %f"), value);
+	//UE_LOG(LogSandBoxPawn, Display, TEXT("MoveForward value is: %f"), value);
 
-	VelocityVector.X = value;
-
+	//VelocityVector.X = value;
+	if (SandBoxMovementComponent)
+	{
+		SandBoxMovementComponent->AddInputVector(GetActorForwardVector() * value);
+	}
 	
 }
 
 void ASandBoxPawn::MoveRight(float value)
 {
-	UE_LOG(LogSandBoxPawn, Display, TEXT("MoveRight value is: %f"), value);
+	//UE_LOG(LogSandBoxPawn, Display, TEXT("MoveRight value is: %f"), value);
 
-	VelocityVector.Y = value;
+	//VelocityVector.Y = value;
 
+	if (SandBoxMovementComponent)
+	{
+		SandBoxMovementComponent->AddInputVector(GetActorRightVector() * value);
+	}
 	
 }
 
+//当Pawn的MovementComponent不存在时可以调用的移动Pawn的函数
 void ASandBoxPawn::CustomMove(float deltatime, float velocity, FVector velocityvector)
 {
-	if (!velocityvector.IsZero())
+	if (!velocityvector.IsZero() && IsPawnControlled())
 	{
 		const FVector NewLocation = GetActorLocation() + velocity * deltatime * velocityvector;
 		SetActorLocation(NewLocation);

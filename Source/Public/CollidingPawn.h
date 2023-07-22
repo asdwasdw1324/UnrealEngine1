@@ -23,8 +23,8 @@ public:
 	UPROPERTY()
 	class UCollidingPawnMovementComponent* OurMovementComponent;
 
-	//返回当前 Pawn 的移动组件（MovementComponent），用于控制 Pawn 的运动
-	virtual UPawnMovementComponent* GetMovementComponent() const override;//UPawnMovementComponent* MyMovementComponent = GetMovementComponent();
+	//重写GetMovementComponent虚函数，返回值为指向UPawnMovementComponent类的指针
+	virtual UPawnMovementComponent* GetMovementComponent() const override;
 
 	//声明4个移动和操作函数
 	void MoveForward(float AxisValue);

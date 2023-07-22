@@ -18,7 +18,8 @@ class UNREALENGINE1_API AMCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AMCharacter();//声明自身类的构造函数
+	//声明自身类的构造函数
+	AMCharacter();
 
 protected:
 
@@ -71,11 +72,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<class AMyProjectile> ProjectileClass1;
 	
-	UPROPERTY(EditDefaultsOnly, Category = Attack)
-	TSubclassOf<class AMyProjectile> ProjectileClass2;
+	//UPROPERTY(EditDefaultsOnly, Category = Attack)
+	//TSubclassOf<class AMyProjectile> ProjectileClass2;
 	
-	UPROPERTY(EditDefaultsOnly, Category = Attack)
-	TSubclassOf<class AMyProjectile> ProjectileClass3;
+	//UPROPERTY(EditDefaultsOnly, Category = Attack)
+	//TSubclassOf<class AMyProjectile> ProjectileClass3;
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	class UAnimMontage* AttackAnim;;

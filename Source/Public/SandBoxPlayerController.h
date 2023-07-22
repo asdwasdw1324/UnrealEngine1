@@ -21,7 +21,7 @@ protected:
 private:
 	void ChangePawn();
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> Pawns;
 
 	int32 CurrentPawnIndex = 0;

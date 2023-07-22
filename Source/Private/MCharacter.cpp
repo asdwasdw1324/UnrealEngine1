@@ -2,7 +2,7 @@
 
 
 #include "MCharacter.h"
-#include "GameFramework/characterMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -42,7 +42,7 @@ void AMCharacter::BeginPlay()
 {
 	Super::BeginPlay();//继承BeginPlay函数
 
-	UE_LOG(LogTemp, Warning, TEXT("This is a warning"));
+	UE_LOG(LogTemp, Warning, TEXT("Game Start!"));
 }
 
 //4个移动操作函数的定义
@@ -80,6 +80,8 @@ void AMCharacter::ToggleFreeCameraModeLock() {
 void AMCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	GEngine->AddOnScreenDebugMessage(-1, .0f, FColor::Cyan, (TEXT("CurrentControllerRotation: %s"), Controller->GetControlRotation().ToString()));
 }
 
 // Called to bind functionality to input
@@ -94,8 +96,8 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMCharacter::StopJump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
-	PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
-	PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
+	//PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
+	//PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AMCharacter::PrimaryInteract);
 }
 
@@ -111,11 +113,12 @@ void AMCharacter::PrimaryInteract()
 void AMCharacter::Fire()
 {
 	// 试图发射发射物。
-	if (ProjectileClass1 || ProjectileClass2 || ProjectileClass3)
+	if (ProjectileClass1)
 	{
 		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
 		FRotator MuzzleRotation = GetControlRotation();
-		FTransform spawnTM = FTransform(MuzzleRotation, MuzzleLocation);
+		//发射点的位置向量和旋转朝向向量保存在SpawnTM这个FTransform这个类型的变量中
+		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
 		
 		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
 		//FVector CameraLocation;
@@ -148,27 +151,24 @@ void AMCharacter::Fire()
 			// 在枪口位置生成发射物,定义名为Projectile的指向AMyProjectile的指针变量
 			if (ProjectileClass1) 
 			{
-				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass1, MuzzleLocation, MuzzleRotation, SpawnParams);
+				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass1, SpawnTM, SpawnParams);
 			}
-			else if (ProjectileClass2)
-			{
-				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass2, MuzzleLocation, MuzzleRotation, SpawnParams);
-			}
-			else if (ProjectileClass3)
-			{
-				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass3, MuzzleLocation, MuzzleRotation, SpawnParams);
-			}
+			
 			if (Projectile)
 			{
 				// 在生成发射物之后设置发射物的初始轨迹，调用FireInDirection函数
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
+
+				MuzzleRotation.Pitch = 0;
+				MuzzleRotation.Roll = 0;
+				SetActorRotation(MuzzleRotation);
 			}
 		}
 	}
 	else 
 	{
 		check(GEngine != nullptr);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Nothing to Fire!"));
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Nothing to Fire!"));
 	}
 }
