@@ -14,7 +14,7 @@ class UNREALENGINE1_API ASItemChest : public AActor, public IMyInterface
 
 public:
 	UPROPERTY(EditAnywhere, Category = ParaMeterList)
-	float targetpitch;
+	float TargetPitch;
 	
 	void Interact_Implementation(APawn* InstigatorPawn);
 

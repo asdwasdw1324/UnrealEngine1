@@ -40,10 +40,10 @@ void USInteractionComponent::PrimaryInteract()
 	ObjectiveQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	
 	AActor* MyOwner = GetOwner();
-
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+	
 	FVector End = EyeLocation + (EyeRotation.Vector()*1000);
 
 	//FHitResult Hit;
