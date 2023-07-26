@@ -67,6 +67,8 @@ protected:
 	UFUNCTION()
 	void Fire();
 
+	FTimerHandle TimerHandle_Fire;
+
 	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1/2/3
 	//AActor---AMyProjectile---ProjectileClass1/2/3
 	UPROPERTY(EditDefaultsOnly, Category = Attack)
@@ -80,6 +82,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	class UAnimMontage* AttackAnim;;
+
+	void Fire_TimeElapsed();
 
 public:	
 	// Called every frame

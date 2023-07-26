@@ -26,18 +26,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	//球体碰撞组件
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	class USphereComponent* CollisionComponent;
 
 	//发射物移动组件
-	UPROPERTY(VisibleAnywhere, Category = Movement)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
 
 	// 初始化射击方向上发射物速度的函数。
 	void FireInDirection(const FVector& ShootDirection);
 
 	// 发射物网格体
-	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	class UStaticMeshComponent* ProjectileMeshComponent;
 
 	// 发射物材质
