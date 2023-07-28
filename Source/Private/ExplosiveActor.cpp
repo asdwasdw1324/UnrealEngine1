@@ -73,7 +73,7 @@ void AExplosiveActor::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Othe
 {
 	ForceComp->FireImpulse();
 
-	UE_LOG(LogTemp, Log, TEXT("OnActorHit in Explosive Ball"));
+	UE_LOG(LogTemp, Warning, TEXT("OnActorHit in Explosive Ball"));
 	UE_LOG(LogTemp, Warning, TEXT("OtherActor: %s, at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
 
 	FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
