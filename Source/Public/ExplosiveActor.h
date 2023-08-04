@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "ExplosiveActor.generated.h"
 
+class UStaticMeshComponent;
+class URadialForceComponent;
+class UMaterialInstanceDynamic;
+
 UCLASS()
 class UNREALENGINE1_API AExplosiveActor : public AActor
 {
@@ -20,10 +24,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
-	class UStaticMeshComponent* MeshComp;
+	UStaticMeshComponent* MeshComp;
 
 	UPROPERTY(VisibleAnywhere)
-	class URadialForceComponent* ForceComp;
+	URadialForceComponent* ForceComp;
+
+	//UPROPERTY(EditDefaultsOnly, Category = Materia)
+	//UMaterialInstanceDynamic* ExplosiveActorMaterialInstance;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void PostInitializeComponents() override;
@@ -34,6 +41,4 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = Materia)
-	class UMaterialInstanceDynamic* ExplosiveActorMaterialInstance;
 };

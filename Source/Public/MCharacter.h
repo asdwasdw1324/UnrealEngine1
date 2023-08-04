@@ -50,12 +50,6 @@ protected:
 	void MoveRight(float value);
 
 	UFUNCTION()
-	void StartJump();
-
-	UFUNCTION()
-	void StopJump();
-
-	UFUNCTION()
 	void ToggleFreeCameraModeFree();
 
 	UFUNCTION()
@@ -67,6 +61,7 @@ protected:
 	UFUNCTION()
 	void Fire();
 
+	//开火延迟计时器句柄
 	FTimerHandle TimerHandle_Fire;
 
 	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1/2/3
@@ -80,9 +75,11 @@ protected:
 	//UPROPERTY(EditDefaultsOnly, Category = Attack)
 	//TSubclassOf<class AMyProjectile> ProjectileClass3;
 
+	//指向开火射击时的动画指针
 	UPROPERTY(EditAnywhere, Category = Attack)
 	class UAnimMontage* AttackAnim;;
 
+	//延迟射击所调用函数
 	void Fire_TimeElapsed();
 
 public:	

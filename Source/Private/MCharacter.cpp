@@ -58,16 +58,6 @@ void AMCharacter::MoveRight(float value) {
 	AddMovementInput(Direction, value);
 }
 
-void AMCharacter::StartJump()
-{
-	bPressedJump = true;
-}
-
-void AMCharacter::StopJump()
-{
-	bPressedJump = false;
-}
-
 void AMCharacter::ToggleFreeCameraModeFree() {
 	bFreeCameraMode = true;
 }
@@ -81,9 +71,9 @@ void AMCharacter::Fire_TimeElapsed()
 	// 试图发射发射物。
 	if (ProjectileClass1)
 	{
-		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
-		FRotator MuzzleRotation = GetControlRotation();
 		//发射点的位置向量和旋转朝向向量保存在SpawnTM这个FTransform这个类型的变量中
+		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
+		FRotator MuzzleRotation = Controller->GetControlRotation();
 		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
 
 		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
@@ -106,12 +96,11 @@ void AMCharacter::Fire_TimeElapsed()
 		if (World)
 		{
 			FActorSpawnParameters SpawnParams;
-			//SpawnParams.Owner = this;
+			SpawnParams.Owner = this;
 			SpawnParams.Instigator = this;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 			AMyProjectile* Projectile = nullptr;
-
 			// 在枪口位置生成发射物,定义名为Projectile的指向AMyProjectile的指针变量
 			if (ProjectileClass1)
 			{
@@ -120,10 +109,11 @@ void AMCharacter::Fire_TimeElapsed()
 
 			if (Projectile)
 			{
-				// 在生成发射物之后设置发射物的初始轨迹，调用FireInDirection函数
+				// 在生成发射物之后设置发射物的初始轨迹，调用FireInDirection函数给予投掷物移动组件初始矢量速度
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
 
+				//射击完成后调整角色朝向前一次射击方向
 				MuzzleRotation.Pitch = 0;
 				MuzzleRotation.Roll = 0;
 				SetActorRotation(MuzzleRotation);
@@ -142,7 +132,8 @@ void AMCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	GEngine->AddOnScreenDebugMessage(-1, .0f, FColor::Cyan, (TEXT("CurrentControllerRotation: %s"), Controller->GetControlRotation().ToString()));
+	FString RotationString = Controller->GetControlRotation().ToString();
+	GEngine->AddOnScreenDebugMessage(-1, .0f, FColor::Cyan, FString::Printf(TEXT("CurrentControllerRotation: %s"), *RotationString));
 }
 
 // Called to bind functionality to input
@@ -154,8 +145,8 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMCharacter::StartJump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMCharacter::StopJump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMCharacter::StopJumping);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
 	//PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
 	//PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);

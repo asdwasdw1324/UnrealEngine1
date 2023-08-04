@@ -24,16 +24,16 @@ AExplosiveActor::AExplosiveActor()
 		MeshComp->SetStaticMesh(Mesh.Object);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
-	if (Material.Succeeded())
-	{
-		ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, MeshComp);
-		MeshComp->SetMaterial(0, ExplosiveActorMaterialInstance);
-	}
+	//static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Game/StarterContent/Materials/M_Water_Ocean.M_Water_Ocean'"));
+	//if (Material.Succeeded())
+	//{
+	//	ExplosiveActorMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, MeshComp);
+	//	MeshComp->SetMaterial(0, ExplosiveActorMaterialInstance);
+	//}
 
 	ForceComp = CreateDefaultSubobject<URadialForceComponent>("ForceComp");
 	ForceComp->SetupAttachment(MeshComp);
-	ForceComp->SetAutoActivate(false);
+	ForceComp->SetAutoActivate(false);  
 
 	ForceComp->Radius = 750.0f;
 	ForceComp->ImpulseStrength = 200000.0f; // Alternative: 200000.0 if bImpulseVelChange = false
@@ -78,4 +78,6 @@ void AExplosiveActor::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Othe
 
 	FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 5.0f, true, 2.0f);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, CombinedString);
+	UE_LOG(LogTemp, Log, TEXT("%s"), *CombinedString);
 }
