@@ -97,6 +97,7 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 10.0f, 32, FColor::Red, false, 2.0f, 1.0f);
 	}
 
 	Destroy();//Á¢¼´Ïú»Ù

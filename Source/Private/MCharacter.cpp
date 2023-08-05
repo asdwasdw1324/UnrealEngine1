@@ -19,10 +19,11 @@ AMCharacter::AMCharacter()
 	check(SpringArmComp != nullptr);
 	SpringArmComp->SetupAttachment(RootComponent);
 	//SpringArm默认参数设置
-	SpringArmComp->TargetArmLength = 300.f;
+	SpringArmComp->TargetArmLength = 250.f;
 	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 4.0f;
+	SpringArmComp->SocketOffset = FVector(0.0f, 90.0f, 0.0f);
 
 	//为指针CameraComp指定UCameraComponent的实例，命名为CameraComp并且附在SpringArmComp下
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
