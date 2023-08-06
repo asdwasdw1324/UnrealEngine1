@@ -8,7 +8,7 @@
 
 class UStaticMeshComponent;
 class URadialForceComponent;
-class UMaterialInstanceDynamic;
+//class UMaterialInstanceDynamic;
 
 UCLASS()
 class UNREALENGINE1_API AExplosiveActor : public AActor

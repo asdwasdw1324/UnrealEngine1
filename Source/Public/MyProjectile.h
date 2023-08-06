@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "MyProjectile.generated.h"
+
+class USphereComponent;
+class UProjectileMovementComponent;
+class UStaticMeshComponent;
+//class UMaterialInstanceDynamic;
 
 UCLASS()
 class UNREALENGINE1_API AMyProjectile : public AActor
@@ -27,22 +30,22 @@ public:
 
 	//球体碰撞组件
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Projectile)
-	class USphereComponent* CollisionComponent;
+	USphereComponent* CollisionComponent;
 
 	//发射物移动组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
-	class UProjectileMovementComponent* ProjectileMovementComponent;
+	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	// 初始化射击方向上发射物速度的函数。
 	void FireInDirection(const FVector& ShootDirection);
 
 	// 发射物网格体
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Projectile)
-	class UStaticMeshComponent* ProjectileMeshComponent;
+	UStaticMeshComponent* ProjectileMeshComponent;
 
 	// 发射物材质
-	UPROPERTY(VisibleDefaultsOnly, Category = Materia)
-	class UMaterialInstanceDynamic* ProjectileMaterialInstance;
+	//UPROPERTY(VisibleDefaultsOnly, Category = Materia)
+	//UMaterialInstanceDynamic* ProjectileMaterialInstance;
 
 	// 当发射物击中物体时会调用的函数。
 	UFUNCTION()

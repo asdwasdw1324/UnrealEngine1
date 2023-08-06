@@ -4,6 +4,13 @@
 #include "MCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "SInteractionComponent.h"
+#include "MyProjectile.h"
+#include "Components/CapsuleComponent.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogMCharacter, All, All)
 
 // Sets default values
 AMCharacter::AMCharacter()
@@ -11,7 +18,7 @@ AMCharacter::AMCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//初始化根组件,针对Character类会出错
+	//初始化根组件,针对Character类会出错,无需运行
 	//RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");
 	
 	//为指针SpringArmComp指定USpringArmComponent的实例，命名为SpringArmComp并且附在RootComponent下
@@ -41,9 +48,10 @@ AMCharacter::AMCharacter()
 // Called when the game starts or when spawned
 void AMCharacter::BeginPlay()
 {
-	Super::BeginPlay();//继承BeginPlay函数
+	//继承BeginPlay函数
+	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Game Start!"));
+	UE_LOG(LogMCharacter, Display, TEXT("Character born!/nGame Start!"));
 }
 
 //4个移动操作函数的定义
@@ -59,11 +67,13 @@ void AMCharacter::MoveRight(float value) {
 	AddMovementInput(Direction, value);
 }
 
-void AMCharacter::ToggleFreeCameraModeFree() {
+void AMCharacter::ToggleFreeCameraModeFree() 
+{
 	bFreeCameraMode = true;
 }
 
-void AMCharacter::ToggleFreeCameraModeLock() {
+void AMCharacter::ToggleFreeCameraModeLock() 
+{
 	bFreeCameraMode = false;
 }
 
@@ -72,10 +82,6 @@ void AMCharacter::Fire_TimeElapsed()
 	// 试图发射发射物。
 	if (ProjectileClass1)
 	{
-		//发射点的位置向量和旋转朝向向量保存在SpawnTM这个FTransform这个类型的变量中
-		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
-		FRotator MuzzleRotation = Controller->GetControlRotation();
-		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
 
 		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
 		//FVector CameraLocation;
@@ -93,6 +99,10 @@ void AMCharacter::Fire_TimeElapsed()
 		//MuzzleRotation.Pitch += 10.0f;
 		//至此确定了发射物的位置和旋转方向，以MuzzleLocation和MuzzleRotation为具体参数
 
+		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
+		FRotator MuzzleRotation = Controller->GetControlRotation();
+		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
+		
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -149,9 +159,9 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMCharacter::StopJumping);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
+	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AMCharacter::PrimaryInteract);
 	//PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
 	//PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
-	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AMCharacter::PrimaryInteract);
 }
 
 void AMCharacter::PrimaryInteract()

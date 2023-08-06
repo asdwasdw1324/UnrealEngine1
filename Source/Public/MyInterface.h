@@ -23,7 +23,7 @@ class UNREALENGINE1_API IMyInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	//为该接口定义某一个API触发功能函数，该函数具有APawn类型的触发该功能的InstigatorPawn参数，该函数具体功能具体实现在功能实现的actor类文件中
+	//为该接口定义某一个API触发功能函数，该函数具有APawn类型的触发该功能的InstigatorPawn参数，该函数具体实现在具体的actor类文件中
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Interact(APawn* InstigatorPawn);
 };
