@@ -11,6 +11,7 @@ class UCameraComponent;
 class USInteractionComponent;
 class UAnimMontage;
 class AMyProjectile;
+class USAttributeComponent;
 
 UCLASS()
 class UNREALENGINE1_API AMCharacter : public ACharacter
@@ -36,9 +37,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Interaction")
 	USInteractionComponent* InteractionComp;
 
-	//指向开火射击时的动画指针
+	//声明指向开火射击时的动画指针
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;;
+
+	//声明指向血量变化的组件指针
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
+	USAttributeComponent* AttributeComp;
 
 	//声明自由相机视角的布尔变量
 	UPROPERTY(EditAnywhere, Category = "CameraConfiguration")

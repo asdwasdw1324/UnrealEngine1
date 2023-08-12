@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogExplosiveActor, All, All)
 
 // Sets default values
 AExplosiveActor::AExplosiveActor()
@@ -73,11 +74,13 @@ void AExplosiveActor::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Othe
 {
 	ForceComp->FireImpulse();
 
-	UE_LOG(LogTemp, Warning, TEXT("OnActorHit in Explosive Ball"));
-	UE_LOG(LogTemp, Warning, TEXT("OtherActor: %s, at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
+	//UE_LOG中的%s占位符需要将FString类型转换为cont TCHAR*类型才能被TEXT宏正确展开
+	//建议在UE_LOG还是AddOnScreenDebugMessage中都先用FString::Printf()方法定义完成格式化的FSring参数，再根据具体的使用函数确定是否需要解引
+	UE_LOG(LogExplosiveActor, Warning, TEXT("OnActorHit in Explosive Ball"));
+	UE_LOG(LogExplosiveActor, Warning, TEXT("OtherActor: %s, at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
 
 	FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 5.0f, true, 2.0f);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, CombinedString);
-	UE_LOG(LogTemp, Log, TEXT("%s"), *CombinedString);
+	UE_LOG(LogExplosiveActor, Display, TEXT("%s"), *CombinedString);
 }

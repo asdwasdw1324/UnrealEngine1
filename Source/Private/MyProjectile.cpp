@@ -4,6 +4,9 @@
 #include "MyProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "SAttributeComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AMyProjectile::AMyProjectile()
@@ -18,7 +21,7 @@ AMyProjectile::AMyProjectile()
 		// Ω´«ÚÃÂµƒ≈ˆ◊≤≈‰÷√Œƒº˛√˚≥∆…Ë÷√Œ™"Projectile"°£
 		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 		// ◊Èº˛ª˜÷–ƒ≥ŒÔ ±µ˜”√µƒ ¬º˛°£
-		CollisionComponent->OnComponentHit.AddDynamic(this, &AMyProjectile::OnHit);
+		//CollisionComponent->OnComponentHit.AddDynamic(this, &AMyProjectile::OnHit);
 		// …Ë÷√«ÚÃÂµƒ≈ˆ◊≤∞Îæ∂°£
 		CollisionComponent->InitSphereRadius(50.0f);
 		// Ω´∏˘◊Èº˛…Ë÷√Œ™≈ˆ◊≤◊Èº˛°£
@@ -28,6 +31,12 @@ AMyProjectile::AMyProjectile()
 		//CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		//CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 		CollisionComponent->SetCollisionProfileName("Projectile");
+	}
+
+	if (!ParticleSystemComponent)
+	{
+		ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystemComponent"));
+		ParticleSystemComponent->SetupAttachment(RootComponent);
 	}
 
 	if (!ProjectileMovementComponent)
@@ -44,16 +53,16 @@ AMyProjectile::AMyProjectile()
 	}
 
 	//∑¢…‰ŒÔ◊Èº˛≈‰÷√æ≤Ã¨Õ¯∏ÒÃÂ
-	if (!ProjectileMeshComponent)
-	{
-		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
-		if (Mesh.Succeeded())
-		{
-			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
-			ProjectileMeshComponent->SetRelativeScale3D(FVector(10.0f,10.0f,10.0f));
-		}
-	}
+	//if (!ProjectileMeshComponent)
+	//{
+	//	ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
+	//	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
+	//	if (Mesh.Succeeded())
+	//	{
+	//		ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
+	//		ProjectileMeshComponent->SetRelativeScale3D(FVector(5.0f,5.0f,5.0f));
+	//	}
+	//}
 
 	//∑¢…‰ŒÔ◊Èº˛≈‰÷√≤ƒ÷  µ¿˝
 	//static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForProjectile(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
@@ -77,6 +86,20 @@ void AMyProjectile::BeginPlay()
 	
 }
 
+void AMyProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.0f);
+			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+			Destroy();
+		}
+	} 
+}
+
 // Called every frame
 void AMyProjectile::Tick(float DeltaTime)
 {
@@ -90,13 +113,35 @@ void AMyProjectile::FireInDirection(const FVector& ShootDirection) //“˝”√¿‡–Õµƒ≥
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;//∑ΩœÚ*ÀŸ∂»¥Û–°
 }
 
+void AMyProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	CollisionComponent->OnComponentHit.AddDynamic(this, &AMyProjectile::OnHit);
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AMyProjectile::OnActorOverlap);
+}
+
 // µ±∑¢…‰ŒÔª˜÷–ŒÔÃÂ ±ª·µ˜”√µƒ∫Ø ˝°£
 void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 30.0f, 32, FColor::Red, false, 2.0f, 1.0f);
+		//DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 50.0f, 32, FColor::Blue, false, 4.0f, 1.0f);
+	}
+
+	if (OtherActor)
+	{
+		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.0f);
+			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+		}
+		if (GetInstigator() != OtherActor)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Instigator is not same with attacked one!"));
+		}
 	}
 
 	Destroy();//¡¢º¥œ˙ªŸ

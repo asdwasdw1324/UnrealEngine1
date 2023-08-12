@@ -9,6 +9,7 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class UStaticMeshComponent;
+class UParticleSystemComponent;
 //class UMaterialInstanceDynamic;
 
 UCLASS()
@@ -24,6 +25,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -36,16 +39,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	UParticleSystemComponent* ParticleSystemComponent;
+
 	// 初始化射击方向上发射物速度的函数。
 	void FireInDirection(const FVector& ShootDirection);
 
 	// 发射物网格体
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Projectile)
-	UStaticMeshComponent* ProjectileMeshComponent;
+	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Projectile)
+	//UStaticMeshComponent* ProjectileMeshComponent;
 
 	// 发射物材质
 	//UPROPERTY(VisibleDefaultsOnly, Category = Materia)
 	//UMaterialInstanceDynamic* ProjectileMaterialInstance;
+
+	virtual void PostInitializeComponents() override;
 
 	// 当发射物击中物体时会调用的函数。
 	UFUNCTION()

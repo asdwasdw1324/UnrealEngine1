@@ -9,6 +9,7 @@
 #include "SInteractionComponent.h"
 #include "MyProjectile.h"
 #include "Components/CapsuleComponent.h"
+#include "SAttributeComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMCharacter, All, All)
 
@@ -37,6 +38,7 @@ AMCharacter::AMCharacter()
 	check(CameraComp != nullptr);
 	CameraComp->SetupAttachment(SpringArmComp);
 
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
@@ -143,8 +145,18 @@ void AMCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//以下三种方法等价
+	//FString MyString = TEXT("Hello, world!");
+	//FString MyString = FString(TEXT("Hello, world!"));
+	//FString MyString = "Hello, world!";
+
+	//FString::Printf常用于创建格式化的FString对象
+	//FString MyVariable = "world";
+	//FString FormattedString = FString::Printf(TEXT("Hello, %s!"), *MyVariable);
+
 	FString RotationString = Controller->GetControlRotation().ToString();
 	GEngine->AddOnScreenDebugMessage(-1, .0f, FColor::Cyan, FString::Printf(TEXT("CurrentControllerRotation: %s"), *RotationString));
+	GEngine->AddOnScreenDebugMessage(-1, .0f, FColor::Cyan, FString::Printf(TEXT("Current Health: %f"), AttributeComp->Health));
 }
 
 // Called to bind functionality to input
