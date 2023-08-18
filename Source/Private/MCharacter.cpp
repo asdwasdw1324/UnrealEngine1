@@ -10,6 +10,8 @@
 #include "MyProjectile.h"
 #include "Components/CapsuleComponent.h"
 #include "SAttributeComponent.h"
+#include "ProjectileBase.h"
+#include "DashProjectile.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMCharacter, All, All)
 

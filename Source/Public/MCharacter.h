@@ -12,6 +12,8 @@ class USInteractionComponent;
 class UAnimMontage;
 class AMyProjectile;
 class USAttributeComponent;
+class AProjectileBase;
+class ADashProjectile;
 
 UCLASS()
 class UNREALENGINE1_API AMCharacter : public ACharacter
@@ -78,6 +80,12 @@ protected:
 	//继承逻辑为AActor->AMyProjectile->ProjectileClass1
 	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<AMyProjectile> ProjectileClass1;
+
+	UPROPERTY(EditDefaultsOnly, Category = Attack)
+	TSubclassOf<AProjectileBase> ProjectileClass2;
+
+	UPROPERTY(EditDefaultsOnly, Category = Attack)
+	TSubclassOf<ADashProjectile> ProjectileClass3;
 	
 	//延迟射击所调用函数，内部逻辑函数，无需暴露给蓝图使用
 	void Fire_TimeElapsed();

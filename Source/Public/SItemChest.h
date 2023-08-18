@@ -10,7 +10,7 @@
 class UStaticMeshComponent;
 
 UCLASS()
-class UNREALENGINE1_API ASItemChest : public AActor, public IMyInterface
+class UNREALENGINE1_API ASItemChest : public AActor, public IMyInterface //必须继承自某个API，才能调用API下的某个函数
 {
 	GENERATED_BODY()
 

@@ -43,20 +43,30 @@ void USInteractionComponent::PrimaryInteract()
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-	
 	FVector End = EyeLocation + (EyeRotation.Vector()*1000);
 
+	//单射线碰撞检测，根据物体碰撞类型
 	//FHitResult Hit;
 	//bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectiveQueryParams);
+	//AActor* HitActor = Hit.GetActor();
+	//if (HitActor)
+	//{
+	//	Same operation with below
+	//}
 	
+	//定义保存碰撞检测结果的TArray数组容器
 	TArray<FHitResult> Hits;
+	//定义碰撞检测组件的球体半径
 	float Radius = 30.f;
 
+	//定义碰撞组件并将其形状设置为Radius半径的球体
 	FCollisionShape Shape;
 	Shape.SetSphere(Radius);
 
+	//返回碰撞布尔类型碰撞检测结果
 	bool bBlockingHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectiveQueryParams, Shape);
 
+	//根据碰撞检测结果确定检测射线的颜色，真为绿，假为红
 	FColor LineColor = bBlockingHit ? FColor::Green : FColor::Red;
 
 	
