@@ -73,6 +73,9 @@ protected:
 	UFUNCTION()
 	void Fire();
 
+	UFUNCTION()
+	void DashFire();
+
 	//¿ª»ðÑÓ³Ù¼ÆÊ±Æ÷¾ä±ú
 	FTimerHandle TimerHandle_Fire;
 

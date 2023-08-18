@@ -174,6 +174,7 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMCharacter::StopJumping);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AMCharacter::PrimaryInteract);
+	PlayerInputComponent->BindAction("DashFire", IE_Pressed, this, &AMCharacter::DashFire);
 	//PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
 	//PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
 }
@@ -193,4 +194,37 @@ void AMCharacter::Fire()
 
 	GetWorldTimerManager().SetTimer(TimerHandle_Fire, this, &AMCharacter::Fire_TimeElapsed, 0.2f);
 		
+}
+
+void AMCharacter::DashFire()
+{
+	if (ProjectileClass3)
+	{
+		
+		FRotator MuzzleRotation = Controller->GetControlRotation();
+		FVector MuzzleLocation = GetActorLocation() + MuzzleRotation.Vector() * 20;
+		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			ADashProjectile* DashProjectile = nullptr;
+			DashProjectile = World->SpawnActor<ADashProjectile>(ProjectileClass3, SpawnTM, SpawnParams);
+
+			MuzzleRotation.Pitch = 0;
+			MuzzleRotation.Roll = 0;
+			SetActorRotation(MuzzleRotation);
+			
+		}
+	}
+	else
+	{
+		check(GEngine != nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Nothing to DashFire!"));
+	}
 }

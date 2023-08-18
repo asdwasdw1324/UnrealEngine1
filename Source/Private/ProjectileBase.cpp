@@ -28,7 +28,7 @@ AProjectileBase::AProjectileBase()
 	MoveComp = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMoveComp");
 	MoveComp->bRotationFollowsVelocity = true;
 	MoveComp->bInitialVelocityInLocalSpace = true;
-	MoveComp->ProjectileGravityScale = 0.0f;
+	MoveComp->ProjectileGravityScale = 1.0f;
 	MoveComp->InitialSpeed = 8000;
 
 	ImpactShakeInnerRadius = 0.0f;
@@ -81,7 +81,7 @@ void AProjectileBase::Explode_Implementation()
 	{
 
 		Super::PostInitializeComponents();
-		//SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
+		SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 
 		// More consistent to bind here compared to Constructor which may fail to bind if Blueprint was created before adding this binding (or when using hotreload)
 		// PostInitializeComponent is the preferred way of binding any events.
