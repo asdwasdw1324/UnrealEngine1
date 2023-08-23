@@ -12,6 +12,7 @@
 #include "SAttributeComponent.h"
 #include "ProjectileBase.h"
 #include "DashProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMCharacter, All, All)
 
@@ -84,7 +85,7 @@ void AMCharacter::ToggleFreeCameraModeLock()
 void AMCharacter::Fire_TimeElapsed()
 {
 	// 试图发射发射物。
-	if (ProjectileClass1)
+	if (ProjectileClass1 || ProjectileClass2)
 	{
 
 		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
@@ -105,41 +106,140 @@ void AMCharacter::Fire_TimeElapsed()
 
 		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
 		FRotator MuzzleRotation = Controller->GetControlRotation();
-		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
 		
-		UWorld* World = GetWorld();
-		if (World)
+		if (GetWorld())
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = this;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AMyProjectile* Projectile = nullptr;
+			FCollisionShape Shape;
+			Shape.SetSphere(20.0f);
+
+			FCollisionQueryParams Params;
+			Params.AddIgnoredActor(this);
+
+			FCollisionObjectQueryParams ObjParams;
+			ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+			ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+			ObjParams.AddObjectTypesToQuery(ECC_Pawn);
+
+			FVector TraceStart = CameraComp->GetComponentLocation();
+			FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000.0f);
+
+			FHitResult Hit;
+
+			if (GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
+			{
+				TraceEnd = Hit.ImpactPoint;
+			}
+
+			FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - MuzzleLocation).Rotator();
+			FTransform SpawnTM = FTransform(ProjRotation, MuzzleLocation);
+
+			AMyProjectile* Projectile1 = nullptr;
+			AProjectileBase* Projectile2 = nullptr;
 			// 在枪口位置生成发射物,定义名为Projectile的指向AMyProjectile的指针变量
 			if (ProjectileClass1)
 			{
-				Projectile = World->SpawnActor<AMyProjectile>(ProjectileClass1, SpawnTM, SpawnParams);
+				Projectile1 = GetWorld()->SpawnActor<AMyProjectile>(ProjectileClass1, SpawnTM, SpawnParams);
+			}
+			
+			if (ProjectileClass2)
+			{
+				Projectile2 = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass2, SpawnTM, SpawnParams);
 			}
 
-			if (Projectile)
+			if (Projectile1 || Projectile2)
 			{
 				// 在生成发射物之后设置发射物的初始轨迹，调用FireInDirection函数给予投掷物移动组件初始矢量速度
-				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->FireInDirection(LaunchDirection);
+				if (Projectile1)
+				{
+					FVector LaunchDirection = ProjRotation.Vector();
+					Projectile1->FireInDirection(LaunchDirection);
+				}
+
+				if (Projectile2)
+				{
+					FVector LaunchDirection = ProjRotation.Vector();
+					UProjectileMovementComponent* MovementComponent = Projectile2->FindComponentByClass<UProjectileMovementComponent>();
+					MovementComponent->Velocity = LaunchDirection * MovementComponent->InitialSpeed;
+				}
+				
 
 				//射击完成后调整角色朝向前一次射击方向
-				MuzzleRotation.Pitch = 0;
-				MuzzleRotation.Roll = 0;
-				SetActorRotation(MuzzleRotation);
+				ProjRotation.Pitch = 0;
+				ProjRotation.Roll = 0;
+				SetActorRotation(ProjRotation);
 			}
 		}
 	}
 	else
 	{
 		check(GEngine != nullptr);
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Nothing to Fire!"));
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Projectile is empty!"));
 	}
+
+	/*if (ProjectileClass2)
+	{
+		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_r");
+		FRotator MuzzleRotation = Controller->GetControlRotation();
+
+		if (GetWorld())
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			FCollisionShape Shape;
+			Shape.SetSphere(20.0f);
+
+			FCollisionQueryParams Params;
+			Params.AddIgnoredActor(this);
+
+			FCollisionObjectQueryParams ObjParams;
+			ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+			ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+			ObjParams.AddObjectTypesToQuery(ECC_Pawn);
+
+			FVector TraceStart = CameraComp->GetComponentLocation();
+			FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000.0f);
+
+			FHitResult Hit;
+
+			if (GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
+			{
+				TraceEnd = Hit.ImpactPoint;
+			}
+
+			FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - MuzzleLocation).Rotator();
+			FTransform SpawnTM = FTransform(ProjRotation, MuzzleLocation);
+
+			AProjectileBase* Projectile = nullptr;
+			if (ProjectileClass2)
+			{
+				Projectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass2, SpawnTM, SpawnParams);
+			}
+
+			if (Projectile)
+			{
+				FVector LaunchDirection = ProjRotation.Vector();
+				UProjectileMovementComponent* MovementComponent = Projectile->FindComponentByClass<UProjectileMovementComponent>();
+				MovementComponent->Velocity = LaunchDirection * MovementComponent->InitialSpeed;
+
+				ProjRotation.Pitch = 0;
+				ProjRotation.Roll = 0;
+				SetActorRotation(ProjRotation);
+			}
+		}
+	}
+	else
+	{
+		check(GEngine != nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("ProjectileClass2 is empty!"));
+	}*/
 }
 
 // Called every frame
@@ -202,7 +302,7 @@ void AMCharacter::DashFire()
 	{
 		
 		FRotator MuzzleRotation = Controller->GetControlRotation();
-		FVector MuzzleLocation = GetActorLocation() + MuzzleRotation.Vector() * 20;
+		FVector MuzzleLocation = GetActorLocation() + MuzzleRotation.Vector() * 100;
 		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);
 
 		UWorld* World = GetWorld();

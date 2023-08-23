@@ -50,6 +50,8 @@ AMyProjectile::AMyProjectile()
 		ProjectileMovementComponent->bShouldBounce = true;//可以弹跳
 		ProjectileMovementComponent->Bounciness = 0.3f;//弹跳系数
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;//重力影响缩放系数
+
+		bReplicates = true;
 	}
 
 	//发射物组件配置静态网格体
@@ -140,7 +142,7 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		}
 		if (GetInstigator() != OtherActor)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Instigator is not same with attacked one!"));
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Instigator is not same with attacked actor!"));
 		}
 	}
 

@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "SAttributeComponent.h"
 
 // Sets default values
 AProjectileBase::AProjectileBase()
@@ -30,8 +31,11 @@ AProjectileBase::AProjectileBase()
 	MoveComp->bInitialVelocityInLocalSpace = true;
 	MoveComp->ProjectileGravityScale = 1.0f;
 	MoveComp->InitialSpeed = 8000;
+	MoveComp->bShouldBounce = true;
+	MoveComp->Bounciness = 0.8f;
+	MoveComp->ProjectileGravityScale = 1.0f;
 
-	ImpactShakeInnerRadius = 0.0f;
+	ImpactShakeInnerRadius = 800.0f;
 	ImpactShakeOuterRadius = 1500.0f;
 
 	// Directly set bool instead of going through SetReplicates(true) within constructor,
@@ -59,6 +63,24 @@ void AProjectileBase::Tick(float DeltaTime)
 void AProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	Explode();
+
+	if (OtherActor != this && OtherComp->IsSimulatingPhysics())
+	{
+		OtherComp->AddImpulseAtLocation(MoveComp->Velocity * 100.0f, Hit.ImpactPoint);
+	}
+	if (OtherActor)
+	{
+		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.0f);
+			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+		}
+		if (GetInstigator() != OtherActor)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Instigator is not same with attacked one!"));
+		}
+	}
 }
 
 void AProjectileBase::Explode_Implementation()
