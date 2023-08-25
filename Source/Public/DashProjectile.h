@@ -17,10 +17,10 @@ class UNREALENGINE1_API ADashProjectile : public AProjectileBase
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Teleport")
-		float TeleportDelay;
+	float TeleportDelay;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Teleport")
-		float DetonateDelay;
+	float DetonateDelay;
 
 	// Handle to cancel timer if we already hit something
 	FTimerHandle TimerHandle_DelayedDetonate;
