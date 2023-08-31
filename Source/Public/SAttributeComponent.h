@@ -7,6 +7,8 @@
 #include "SAttributeComponent.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChange, AActor*, InstigatorActor, USAttributeComponent*, OwningComp, float, NewHealth, float, delta);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALENGINE1_API USAttributeComponent : public UActorComponent
 {
@@ -16,9 +18,12 @@ public:
 	// Sets default values for this component's properties
 	USAttributeComponent();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-	float Health;
-
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(float delta);
+
+	UPROPERTY(BlueprintAssignable, BlueprintReadOnly)
+	FOnHealthChange OnHealthChange;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	float Health;
 };

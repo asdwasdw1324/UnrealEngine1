@@ -19,6 +19,8 @@ bool USAttributeComponent::ApplyHealthChange(float delta)
 {
 	Health = Health + delta;
 
+	OnHealthChange.Broadcast(nullptr, this, Health, delta);
+
 	return true;
 }
 
