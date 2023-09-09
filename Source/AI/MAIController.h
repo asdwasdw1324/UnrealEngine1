@@ -19,8 +19,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
-	
+	virtual void BeginPlay() override;	
 };

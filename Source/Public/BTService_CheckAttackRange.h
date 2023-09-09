@@ -19,5 +19,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FBlackboardKeySelector AttackRangeKey;
 
+	UPROPERTY(EditAnywhere, Category = "AI")
+	float MaxAttackRange;
+
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+public:
+	UBTService_CheckAttackRange();
 };

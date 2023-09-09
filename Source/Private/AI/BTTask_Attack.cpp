@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 			return EBTNodeResult::Failed;
 		}
 
-		FVector Muzzlocation = MyPawn->GetMesh()->GetSocketLocation("hat");
+		FVector Muzzlocation = MyPawn->GetMesh()->GetSocketLocation("hand_r");
 
 		AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("TargetActor"));
 		if (TargetActor == nullptr)
@@ -32,11 +32,12 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 		FVector Direction = TargetActor->GetActorLocation() - Muzzlocation;
 		FRotator MuzzleRotation = Direction.Rotation();
+		FVector FinalMuzzLocation = Muzzlocation + MuzzleRotation.Vector() * 100;
 
 		FActorSpawnParameters Params;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		AActor* NewProj = GetWorld()->SpawnActor<AActor>(ProjectileClass, Muzzlocation, MuzzleRotation, Params);
+		AProjectileBase* NewProj = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, FinalMuzzLocation, MuzzleRotation, Params);
 
 		return NewProj ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 	}

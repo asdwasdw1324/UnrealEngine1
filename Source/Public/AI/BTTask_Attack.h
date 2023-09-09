@@ -21,6 +21,6 @@ class UNREALENGINE1_API UBTTask_Attack : public UBTTaskNode
 public:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AProjectileBase> ProjectileClass;
 	
 };

@@ -21,15 +21,26 @@ void UBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 			if (ensure(MyController))
 			{
 				APawn* AIPawn = MyController->GetPawn();
+
 				if (ensure(AIPawn))
-				{
+				{	
 					float DistanceTo = FVector::Distance(TargetActor->GetActorLocation(), AIPawn->GetActorLocation());
+					bool bWithinRange = DistanceTo < MaxAttackRange;
 
-					bool bWithinRange = DistanceTo < 800.f;
+					bool bHasLOS = false;
+					if (bWithinRange)
+					{
+						bHasLOS = MyController->LineOfSightTo(TargetActor);
+					}
 
-					BlackBoardComp->SetValueAsBool(AttackRangeKey.SelectedKeyName, bWithinRange);
+					BlackBoardComp->SetValueAsBool(AttackRangeKey.SelectedKeyName, (bWithinRange && bHasLOS));
 				}
 			}
 		}
 	}
+}
+
+UBTService_CheckAttackRange::UBTService_CheckAttackRange()
+{
+	MaxAttackRange = 1000.0f;
 }
