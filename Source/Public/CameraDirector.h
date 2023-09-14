@@ -19,6 +19,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void PostInitializeComponents() override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,9 +35,9 @@ public:
 	//定义一个浮点型参数，作为两个Camera切换的间隔时间，其会随着Tick函数计算出的DeltaTime不断减小直至小于0，随后被重置，随后再不断减小
 	float TimeToNextCameraChange;
 
-	//UPROPERTY(EditAnywhere, Category = "Camera Configuration")
-	//TArray<AActor*> CameraList;
+	UPROPERTY(EditAnywhere, Category = "Camera Configuration")
+	TArray<AActor*> CameraDropdownList;
 
 	//当前激活Camera序号
-	int CurrentCameraIndex; // 声明为int32类型
+	int32 CurrentCameraIndex; // 声明为int32类型
 };

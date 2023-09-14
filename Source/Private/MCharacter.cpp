@@ -22,7 +22,10 @@ AMCharacter::AMCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//初始化根组件,针对Character类会出错,无需运行
+	//If true, this Pawn's yaw will be updated to match the Controller's ControlRotation yaw, if controlled by a PlayerController.
+	bUseControllerRotationYaw = false;
+
+	//无需初始化根组件,针对Character类会出错
 	//RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");
 	
 	//为指针SpringArmComp指定USpringArmComponent的实例，命名为SpringArmComp并且附在RootComponent下
@@ -31,7 +34,7 @@ AMCharacter::AMCharacter()
 	SpringArmComp->SetupAttachment(RootComponent);
 	//SpringArm默认参数设置
 	SpringArmComp->TargetArmLength = 250.f;
-	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->bUsePawnControlRotation = true; //Removed from USpringArmComponent since UE5.2
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 4.0f;
 	SpringArmComp->SocketOffset = FVector(0.0f, 90.0f, 0.0f);
@@ -40,13 +43,12 @@ AMCharacter::AMCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	check(CameraComp != nullptr);
 	CameraComp->SetupAttachment(SpringArmComp);
-
-	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	
+	//获取角色移动组件并修改相关属性
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	bUseControllerRotationYaw = false;
 
-	
+	//角色属性组件，包含健康值等
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 }
 
