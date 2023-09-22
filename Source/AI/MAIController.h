@@ -20,4 +20,5 @@ protected:
 	UBehaviorTree* BehaviorTree;
 
 	virtual void BeginPlay() override;	
+
 };

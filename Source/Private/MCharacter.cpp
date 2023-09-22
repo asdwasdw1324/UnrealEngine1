@@ -14,6 +14,7 @@
 #include "DashProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
+//Define a customize log message for current CPP file
 DEFINE_LOG_CATEGORY_STATIC(LogMCharacter, All, All)
 
 // Sets default values
@@ -58,27 +59,43 @@ void AMCharacter::BeginPlay()
 	//继承BeginPlay函数
 	Super::BeginPlay();
 
-	UE_LOG(LogMCharacter, Display, TEXT("Character born!/nGame Start!"));
+	UE_LOG(LogMCharacter, Error, TEXT("Character born!\nGame Start!"));
 }
 
 //4个移动操作函数的定义
-void AMCharacter::MoveForward(float value) {
+void AMCharacter::MoveForward(float value) 
+{
 	//AddMovementInput(GetActorForwardVector(), value);
+	//Get controller's forward vector
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, value);
+	if (value != 0)
+	{
+		check(GEngine != nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(Direction.ToString())));
+		AddMovementInput(Direction, value);
+	}
 }
 
-void AMCharacter::MoveRight(float value) {
+void AMCharacter::MoveRight(float value) 
+{
 	//AddMovementInput(GetActorRightVector(), value);
+	//Get controller's right vector
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, value);
+	if (value !=0)
+	{
+		check(GEngine != nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(Direction.ToString())));
+		AddMovementInput(Direction, value);
+	}
 }
 
+//Not finished
 void AMCharacter::ToggleFreeCameraModeFree() 
 {
 	bFreeCameraMode = true;
 }
 
+//Not finished
 void AMCharacter::ToggleFreeCameraModeLock() 
 {
 	bFreeCameraMode = false;
@@ -89,7 +106,6 @@ void AMCharacter::Fire_TimeElapsed()
 	// 试图发射发射物。
 	if (ProjectileClass1 || ProjectileClass2)
 	{
-
 		// 获取摄像机的位置和旋转方向，将actoreyesviewpoint的location和rotation的值分别返回给两个参数
 		//FVector CameraLocation;
 		//FRotator CameraRotation;
@@ -277,8 +293,8 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AMCharacter::PrimaryInteract);
 	PlayerInputComponent->BindAction("DashFire", IE_Pressed, this, &AMCharacter::DashFire);
-	//PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
-	//PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
+	PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
+	PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
 }
 
 void AMCharacter::PrimaryInteract()
@@ -302,7 +318,6 @@ void AMCharacter::DashFire()
 {
 	if (ProjectileClass3)
 	{
-		
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		FVector MuzzleLocation = GetActorLocation() + MuzzleRotation.Vector() * 100;
 		FTransform SpawnTM = FTransform(MuzzleRotation, MuzzleLocation);

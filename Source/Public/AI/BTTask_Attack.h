@@ -23,4 +23,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TSubclassOf<AProjectileBase> ProjectileClass;
 	
+	UPROPERTY(EditAnywhere, Category = "AI")
+	UAnimMontage* AttackAnimation;
 };

@@ -24,7 +24,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 		FVector Muzzlocation = MyPawn->GetMesh()->GetSocketLocation("hand_r");
 
-		AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("TargetActor"));
+		AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("CharacterLocation"));
 		if (TargetActor == nullptr)
 		{
 			return EBTNodeResult::Failed;
@@ -35,10 +35,30 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		FVector FinalMuzzLocation = Muzzlocation + MuzzleRotation.Vector() * 100;
 
 		FActorSpawnParameters Params;
+		Params.Owner = MyPawn;
+		Params.Instigator = MyPawn;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		AProjectileBase* NewProj = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, FinalMuzzLocation, MuzzleRotation, Params);
+		FCollisionQueryParams AIQueryParams;
+		AIQueryParams.AddIgnoredActor(MyPawn);
 
+		FCollisionObjectQueryParams AIObjectParams;
+		AIObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+		AIObjectParams.AddObjectTypesToQuery(ECC_WorldStatic);
+		AIObjectParams.AddObjectTypesToQuery(ECC_Pawn);
+
+		FTransform AISpawnTM = FTransform(MuzzleRotation, FinalMuzzLocation);
+
+		AProjectileBase* NewProj = nullptr;
+		if (ensure(ProjectileClass))
+		{
+			ACharacter* TargetCharacter = Cast<ACharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("CharacterLocation"));
+			check(AttackAnimation);
+			TargetCharacter->PlayAnimMontage(AttackAnimation);
+
+			NewProj = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, AISpawnTM, Params);
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("NewProjName: %s"), *GetNameSafe(NewProj)));
+		}
 		return NewProj ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 	}
 	

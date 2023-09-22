@@ -10,17 +10,21 @@ void AMAIController::BeginPlay()
 
 	Super::BeginPlay();
 
-	RunBehaviorTree(BehaviorTree);
-
-	APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this,0);
-
-	FString MyPawnName = GetNameSafe(MyPawn);
-	UE_LOG(LogTemp, Warning, TEXT("The Target Location is: %s"), *MyPawnName);
-
-	if (MyPawn)
+	if (ensureMsgf(BehaviorTree, TEXT("BT is nullprt! Please add BT asserts")))
 	{
-		GetBlackboardComponent()->SetValueAsVector("MoveToLocation", MyPawn->GetActorLocation());
-		GetBlackboardComponent()->SetValueAsObject("CharacterLocation", MyPawn);
+		RunBehaviorTree(BehaviorTree);
 	}
+
+
+	//APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this,0);
+
+	//FString MyPawnName = GetNameSafe(MyPawn);
+	//UE_LOG(LogTemp, Warning, TEXT("The Target Location is: %s"), *MyPawnName);
+
+	//if (MyPawn)
+	//{
+	//	GetBlackboardComponent()->SetValueAsVector("MoveToLocation", MyPawn->GetActorLocation());
+	//	GetBlackboardComponent()->SetValueAsObject("CharacterLocation", MyPawn);
+	//}
 
 }

@@ -42,5 +42,5 @@ void UBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
 UBTService_CheckAttackRange::UBTService_CheckAttackRange()
 {
-	MaxAttackRange = 1000.0f;
+	MaxAttackRange = 2000.0f;
 }
