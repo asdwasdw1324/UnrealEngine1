@@ -13,9 +13,9 @@ AMAICharacter::AMAICharacter()
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void AMAICharacter::PostInitializeComponents()

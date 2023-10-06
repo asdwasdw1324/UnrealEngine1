@@ -10,7 +10,7 @@
 #include "Sound/SoundCue.h"
 #include "SAttributeComponent.h"
 
-// Sets default values
+// Constructor function, sets default values
 AProjectileBase::AProjectileBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -41,9 +41,6 @@ AProjectileBase::AProjectileBase()
 	// Directly set bool instead of going through SetReplicates(true) within constructor,
 	// Only use SetReplicates() outside constructor
 	bReplicates = true;
-
-	//SphereComp->OnComponentHit.AddDynamic(this, &AProjectileBase::OnActorHit);
-
 }
 
 // Called when the game starts or when spawned
@@ -60,23 +57,25 @@ void AProjectileBase::Tick(float DeltaTime)
 
 }
 
+//Hit function when ProjectileBase hit on any other actors
 void AProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	Explode();
 
-	if (OtherActor != this && OtherComp->IsSimulatingPhysics())
-	{
-		OtherComp->AddImpulseAtLocation(MoveComp->Velocity * 100.0f, Hit.ImpactPoint);
-	}
 	if (OtherActor)
 	{
-		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
-		if (AttributeComp)
+		if (OtherActor != this && OtherComp->IsSimulatingPhysics())
 		{
-			AttributeComp->ApplyHealthChange(-20.0f);
-			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+			OtherComp->AddImpulseAtLocation(MoveComp->Velocity * 100.0f, Hit.ImpactPoint);
+
+			USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+			if (AttributeComp)
+			{
+				AttributeComp->ApplyHealthChange(-20.0f);
+				UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+			}
 		}
-		if (GetInstigator() != OtherActor)
+		if (OtherActor != GetInstigator())
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Instigator is not same with attacked one!"));
 		}
@@ -107,6 +106,7 @@ void AProjectileBase::Explode_Implementation()
 
 		// More consistent to bind here compared to Constructor which may fail to bind if Blueprint was created before adding this binding (or when using hotreload)
 		// PostInitializeComponent is the preferred way of binding any events.
+		// Bind OnActorHit event on the OnComponentHit delegate
 		SphereComp->OnComponentHit.AddDynamic(this, &AProjectileBase::OnActorHit);
 	}
 

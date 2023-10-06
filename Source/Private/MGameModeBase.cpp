@@ -8,6 +8,9 @@
 #include "AI/MAICharacter.h"
 #include "SAttributeComponent.h"
 #include "EngineUtils.h"
+#include "DrawDebugHelpers.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LOGGameModeBase, All, All)
 
 AMGameModeBase::AMGameModeBase()
 {
@@ -39,9 +42,10 @@ void AMGameModeBase::SpawnBotTimerElapsed()
 
 void AMGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
+	//If query failed, not do any operation
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn bot EQS Query Failed"));
+		UE_LOG(LOGGameModeBase, Warning, TEXT("Spawn bot EQS Query Failed"));
 		return;
 	}
 	
@@ -51,14 +55,15 @@ void AMGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		AMAICharacter* Bot = *It;
 
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
-		if (AttributeComp && AttributeComp->Health >= 0)
+		if (ensure(AttributeComp) && AttributeComp->IsAlive())
 		{
 			NrOfAliveBots++;
 		}
 	}
 
-	float MaxBotCount = 10.0f;
+	UE_LOG(LOGGameModeBase, Log, TEXT("Found %i alive bots."), NrOfAliveBots);
 
+	float MaxBotCount = 10.0f;
 	if (DifficultyCurve)
 	{
 		DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
@@ -66,13 +71,15 @@ void AMGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	
 	if (NrOfAliveBots >= MaxBotCount)
 	{
+		UE_LOG(LOGGameModeBase, Log, TEXT("At maximum bot capacity. Skipping bot spawn."));
 		return;
 	}
 	
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
-
 	if (Locations.IsValidIndex(0))
 	{
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
+
+		DrawDebugSphere(GetWorld(), Locations[0], 80.0f, 20, FColor::Green, false, 60.0f);
 	}
 }
