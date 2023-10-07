@@ -129,7 +129,6 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-		//DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 50.0f, 32, FColor::Blue, false, 4.0f, 1.0f);
 	}
 
 	if (OtherActor)
@@ -138,7 +137,7 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		if (AttributeComp)
 		{
 			AttributeComp->ApplyHealthChange(-20.0f);
-			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+			UE_LOG(LogTemp, Warning, TEXT("Health minus 20!"));
 		}
 		if (GetInstigator() != OtherActor)
 		{

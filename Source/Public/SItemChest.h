@@ -27,17 +27,10 @@ public:
 	ASItemChest();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	//定义指向宝箱盒子和盖子的UStaticMeshComponent指针
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TreasureObj)
 	UStaticMeshComponent* BaseMesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TreasureObj)
 	UStaticMeshComponent* LidMesh;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

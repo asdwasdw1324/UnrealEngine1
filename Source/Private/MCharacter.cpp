@@ -24,6 +24,7 @@ AMCharacter::AMCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//If true, this Pawn's yaw will be updated to match the Controller's ControlRotation yaw, if controlled by a PlayerController.
+	//false = freedom view
 	bUseControllerRotationYaw = false;
 
 	//无需初始化根组件,针对Character类会出错

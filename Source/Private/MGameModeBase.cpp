@@ -33,22 +33,6 @@ void AMGameModeBase::StartPlay()
 
 void AMGameModeBase::SpawnBotTimerElapsed()
 {
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
-	if (QueryInstance)
-	{
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AMGameModeBase::OnQueryCompleted);
-	}
-}
-
-void AMGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
-{
-	//If query failed, not do any operation
-	if (QueryStatus != EEnvQueryStatus::Success)
-	{
-		UE_LOG(LOGGameModeBase, Warning, TEXT("Spawn bot EQS Query Failed"));
-		return;
-	}
-	
 	int32 NrOfAliveBots = 0;
 	for (TActorIterator<AMAICharacter>It(GetWorld()); It; ++It)
 	{
@@ -66,12 +50,28 @@ void AMGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	float MaxBotCount = 10.0f;
 	if (DifficultyCurve)
 	{
-		DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
 	}
-	
+
 	if (NrOfAliveBots >= MaxBotCount)
 	{
 		UE_LOG(LOGGameModeBase, Log, TEXT("At maximum bot capacity. Skipping bot spawn."));
+		return;
+	}
+
+	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
+	if (QueryInstance)
+	{
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AMGameModeBase::OnQueryCompleted);
+	}
+}
+
+void AMGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+	//If query failed, not do any operation
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LOGGameModeBase, Warning, TEXT("Spawn bot EQS Query Failed"));
 		return;
 	}
 	
