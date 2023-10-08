@@ -21,13 +21,13 @@ void AMGameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
-	if (GEngine != nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("We are using TPSCharacter!"));
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hello World, this is MyNewGameModeBase!"));
-	}
+	//if (GEngine != nullptr)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("We are using TPSCharacter!"));
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hello World, this is MyNewGameModeBase!"));
+	//}
 
-	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &AMGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
+	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &AMGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true, -1.0f);
 
 }
 
@@ -47,7 +47,7 @@ void AMGameModeBase::SpawnBotTimerElapsed()
 
 	UE_LOG(LOGGameModeBase, Log, TEXT("Found %i alive bots."), NrOfAliveBots);
 
-	float MaxBotCount = 10.0f;
+	float MaxBotCount;
 	if (DifficultyCurve)
 	{
 		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
@@ -59,7 +59,7 @@ void AMGameModeBase::SpawnBotTimerElapsed()
 		return;
 	}
 
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
+	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::SingleResult, nullptr);
 	if (QueryInstance)
 	{
 		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AMGameModeBase::OnQueryCompleted);

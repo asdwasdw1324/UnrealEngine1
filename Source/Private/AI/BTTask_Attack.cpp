@@ -6,6 +6,7 @@
 #include "GameFramework\Character.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "ProjectileBase.h"
+#include "MyProjectile.h"
 
 class AAIController;
 class ACharacter;
@@ -49,14 +50,14 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 		FTransform AISpawnTM = FTransform(MuzzleRotation, FinalMuzzLocation);
 
-		AProjectileBase* NewProj = nullptr;
+		AMyProjectile* NewProj = nullptr;
 		if (ensure(ProjectileClass))
 		{
 			ACharacter* TargetCharacter = Cast<ACharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("CharacterLocation"));
 			check(AttackAnimation);
 			TargetCharacter->PlayAnimMontage(AttackAnimation);
 
-			NewProj = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, AISpawnTM, Params);
+			NewProj = GetWorld()->SpawnActor<AMyProjectile>(ProjectileClass, AISpawnTM, Params);
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("NewProjName: %s"), *GetNameSafe(NewProj)));
 		}
 		return NewProj ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;

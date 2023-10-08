@@ -38,6 +38,15 @@ bool USAttributeComponent::IsActorAlive(AActor* Actor)
 	return false;
 }
 
+bool USAttributeComponent::IsAlive() const
+{
+	if (Health >= 0)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool USAttributeComponent::ApplyHealthChange(float delta)
 {
 	float OldHealth = Health;
@@ -50,12 +59,4 @@ bool USAttributeComponent::ApplyHealthChange(float delta)
 	return ActualDelta != 0;
 }
 
-bool USAttributeComponent::IsAlive() const
-{
-	if (Health >= 0)
-	{
-		return true;
-	}
-	return false;
-}
 

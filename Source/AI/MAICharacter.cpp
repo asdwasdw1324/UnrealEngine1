@@ -25,7 +25,7 @@ void AMAICharacter::PostInitializeComponents()
 	
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AMAICharacter::OnPawnSeen);
 
-	AttributeComp->OnHealthChange.AddDynamic(this, &AMAICharacter::OnHealthChanged);
+	AttributeComp->OnHealthChange.AddDynamic(this, &AMAICharacter::AIOnHealthChanged);
 
 }
 
@@ -40,12 +40,12 @@ void AMAICharacter::OnPawnSeen(APawn* Pawn)
 	}
 }
 
-void AMAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float delta)
+void AMAICharacter::AIOnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float delta)
 {
-	if (delta < 0.0f)
+	if (delta <= 0.0f)
 	{
 
-
+		
 		if (NewHealth <= 0.0f)
 		{
 			//stop BT

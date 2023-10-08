@@ -7,6 +7,7 @@
 #include "BTTask_Attack.generated.h"
 
 class AProjectileBase;
+class AMyProjectile;
 
 /**
  * 
@@ -21,7 +22,7 @@ class UNREALENGINE1_API UBTTask_Attack : public UBTTaskNode
 public:
 
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<AProjectileBase> ProjectileClass;
+	TSubclassOf<AMyProjectile> ProjectileClass;
 	
 	UPROPERTY(EditAnywhere, Category = "AI")
 	UAnimMontage* AttackAnimation;

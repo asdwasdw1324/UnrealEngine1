@@ -71,8 +71,9 @@ void AProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Othe
 			USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 			if (AttributeComp)
 			{
-				AttributeComp->ApplyHealthChange(-20.0f);
-				UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+				AttributeComp->ApplyHealthChange(-50.0f);
+				UE_LOG(LogTemp, Error, TEXT("Health minus 50!"));
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Health minus 50!"));
 			}
 		}
 		if (OtherActor != GetInstigator())
