@@ -6,6 +6,8 @@
 #include "BehaviorTree/BTService.h"
 #include "BTService_CheckAttackRange.generated.h"
 
+class UBlackboardComponent;
+
 /**
  * 
  */
@@ -13,17 +15,19 @@ UCLASS()
 class UNREALENGINE1_API UBTService_CheckAttackRange : public UBTService
 {
 	GENERATED_BODY()
-	
+
+public:
+	UBTService_CheckAttackRange();	
+
 protected:
 
-	UPROPERTY(EditAnywhere, Category = "AI")
+	UPROPERTY(EditAnywhere, Category = "AIParameter")
 	FBlackboardKeySelector AttackRangeKey;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
+	UPROPERTY(EditAnywhere, Category = "AIParameter")
 	float MaxAttackRange;
 
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-public:
-	UBTService_CheckAttackRange();
+	virtual void OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };
