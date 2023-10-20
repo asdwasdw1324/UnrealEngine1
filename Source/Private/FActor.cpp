@@ -8,12 +8,12 @@ AFActor::AFActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));//建议每次创建Actor类对根组件进行此步初始化，使得根组件不为nullptr
 	VisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	VisualMesh->SetupAttachment(RootComponent);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
-
 	if (CubeVisualAsset.Succeeded())
 	{
 		VisualMesh->SetStaticMesh(CubeVisualAsset.Object);
@@ -36,7 +36,7 @@ void AFActor::Tick(float DeltaTime)
 	FVector NewLocation = GetActorLocation();
 	FRotator NewRotation = GetActorRotation();
 	float RunningTime = GetGameTimeSinceCreation();
-	float DeltaHeight = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
+	float DeltaHeight = (FMath::Cos(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
 	NewLocation.Z += DeltaHeight * FloatSpeed;       //Scale our height by a factor of 20
 	float DeltaRotation = DeltaTime * RotationSpeed;    //Rotate by 20 degrees per second
 	NewRotation.Yaw += DeltaRotation;

@@ -21,11 +21,11 @@ void AMGameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
-	//if (GEngine != nullptr)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("We are using TPSCharacter!"));
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hello World, this is MyNewGameModeBase!"));
-	//}
+	if (GEngine != nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("We are using TPSCharacter!"), true, FVector2D(2.0f, 2.0f));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hello World, this is MyNewGameModeBase!"));
+	}
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &AMGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true, -1.0f);
 
@@ -45,7 +45,7 @@ void AMGameModeBase::SpawnBotTimerElapsed()
 		}
 	}
 
-	UE_LOG(LOGGameModeBase, Log, TEXT("Found %i alive bots."), NrOfAliveBots);
+	UE_LOG(LOGGameModeBase, Warning, TEXT("Found %i alive bots."), NrOfAliveBots);
 
 	float MaxBotCount;
 	if (DifficultyCurve)
@@ -55,7 +55,7 @@ void AMGameModeBase::SpawnBotTimerElapsed()
 
 	if (NrOfAliveBots >= MaxBotCount)
 	{
-		UE_LOG(LOGGameModeBase, Log, TEXT("At maximum bot capacity. Skipping bot spawn."));
+		UE_LOG(LOGGameModeBase, Error, TEXT("At maximum bot capacity. Skipping bot spawn."));
 		return;
 	}
 
