@@ -36,7 +36,7 @@ void AFActor::Tick(float DeltaTime)
 	FVector NewLocation = GetActorLocation();
 	FRotator NewRotation = GetActorRotation();
 	float RunningTime = GetGameTimeSinceCreation();
-	float DeltaHeight = (FMath::Cos(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
+	float DeltaHeight = (FMath::Cos(RunningTime + DeltaTime) - FMath::Cos(RunningTime));
 	NewLocation.Z += DeltaHeight * FloatSpeed;       //Scale our height by a factor of 20
 	float DeltaRotation = DeltaTime * RotationSpeed;    //Rotate by 20 degrees per second
 	NewRotation.Yaw += DeltaRotation;
