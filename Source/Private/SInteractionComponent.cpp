@@ -38,6 +38,7 @@ void USInteractionComponent::PrimaryInteract()
 {
 	FCollisionObjectQueryParams ObjectiveQueryParams;
 	ObjectiveQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectiveQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	
 	AActor* MyOwner = GetOwner();
 	FVector EyeLocation;

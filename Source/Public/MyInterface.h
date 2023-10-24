@@ -26,4 +26,7 @@ public:
 	//为该接口定义某一个API触发功能函数，该函数具有APawn类型的触发该功能的InstigatorPawn参数，该函数具体实现在具体的actor类文件中
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Interact(APawn* InstigatorPawn);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	FText GetInteractText(APawn* InstigatorPawn);
 };

@@ -4,6 +4,7 @@
 #include "MPowerupActor.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "SAttributeComponent.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -49,7 +50,20 @@ void AMPowerupActor::Tick(float DeltaTime)
 
 void AMPowerupActor::Interact_Implementation(APawn* InstigatorPawn)
 {
-	// logic in derived classes...
+	HideAndCooldownPowerup();
+	
+	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	if (ensure(AttributeComp))
+	{
+		AttributeComp->ApplyHealthChange(50.0f);
+		UE_LOG(LogTemp, Error, TEXT("Health add 50!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Health add 50!")));
+	}
+}
+
+FText AMPowerupActor::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
 }
 
 

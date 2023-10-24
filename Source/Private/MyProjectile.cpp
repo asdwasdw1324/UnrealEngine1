@@ -44,11 +44,14 @@ AMyProjectile::AMyProjectile()
 		// 使用此组件驱动发射物的移动。配置相关默认属性
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);//设置运动更新组件
+		
 		ProjectileMovementComponent->InitialSpeed = 3000.0f;//初始速度
 		ProjectileMovementComponent->MaxSpeed = 3000.0f;//最大速度
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;//旋转跟随速度方向
+		
 		ProjectileMovementComponent->bShouldBounce = true;//可以弹跳
 		ProjectileMovementComponent->Bounciness = 0.3f;//弹跳系数
+		
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;//重力影响缩放系数
 
 		bReplicates = true;
@@ -65,7 +68,6 @@ AMyProjectile::AMyProjectile()
 	//		ProjectileMeshComponent->SetRelativeScale3D(FVector(5.0f,5.0f,5.0f));
 	//	}
 	//}
-
 	//发射物组件配置材质实例
 	//static ConstructorHelpers::FObjectFinder<UMaterial>MaterialForProjectile(TEXT("/Script/Engine.Material'/Engine/MapTemplates/Materials/BasicAsset03.BasicAsset03'"));
 	//if (MaterialForProjectile.Succeeded())
@@ -76,6 +78,7 @@ AMyProjectile::AMyProjectile()
 	//ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
 	//ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 	//ProjectileMeshComponent->SetupAttachment(RootComponent);
+	
 	
 	// 该类产生后的生命周期为5秒
 	InitialLifeSpan = 5.0f;
