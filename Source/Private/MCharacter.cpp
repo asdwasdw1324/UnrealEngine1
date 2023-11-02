@@ -66,27 +66,23 @@ void AMCharacter::BeginPlay()
 //4个移动操作函数的定义
 void AMCharacter::MoveForward(float value) 
 {
-	//AddMovementInput(GetActorForwardVector(), value);
 	//Get controller's forward vector
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	if (value != 0)
+	FVector ControllerForwardDirection = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
+	if (value != 0 && GEngine)
 	{
-		check(GEngine != nullptr);
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(Direction.ToString())));
-		AddMovementInput(Direction, value);
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(ControllerForwardDirection.ToString())));
+		AddMovementInput(ControllerForwardDirection, value);
 	}
 }
 
 void AMCharacter::MoveRight(float value) 
 {
-	//AddMovementInput(GetActorRightVector(), value);
 	//Get controller's right vector
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	if (value !=0)
+	FVector ControllerRightDirection = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	if (value != 0 && GEngine)
 	{
-		check(GEngine != nullptr);
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(Direction.ToString())));
-		AddMovementInput(Direction, value);
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(ControllerRightDirection.ToString())));
+		AddMovementInput(ControllerRightDirection, value);
 	}
 }
 

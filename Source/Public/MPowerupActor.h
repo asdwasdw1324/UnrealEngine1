@@ -52,5 +52,5 @@ public:
 
 	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 
-
+	
 };
