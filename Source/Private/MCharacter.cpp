@@ -26,9 +26,6 @@ AMCharacter::AMCharacter()
 	//If true, this Pawn's yaw will be updated to match the Controller's ControlRotation yaw, if controlled by a PlayerController.
 	//false = freedom view
 	bUseControllerRotationYaw = false;
-
-	//无需初始化根组件,针对Character类会出错
-	//RootComponent = CreateDefaultSubobject<USceneComponent>("DefaultCharacterSceneComp");
 	
 	//为指针SpringArmComp指定USpringArmComponent的实例，命名为SpringArmComp并且附在RootComponent下
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
@@ -60,7 +57,7 @@ void AMCharacter::BeginPlay()
 	//继承BeginPlay函数
 	Super::BeginPlay();
 
-	UE_LOG(LogMCharacter, Error, TEXT("Character born!\nGame Start!"));
+	UE_LOG(LogMCharacter, Display, TEXT("Character born!\nGame Start!"));
 }
 
 //4个移动操作函数的定义

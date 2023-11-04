@@ -80,6 +80,7 @@ void USInteractionComponent::PrimaryInteract()
 			{
 				APawn* MyPawn = Cast<APawn>(MyOwner);
 				IMyInterface::Execute_Interact(HitActor, MyPawn);
+				break;
 			}
 		}
 		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor,false, 2.0f, 1.0f);
