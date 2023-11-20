@@ -22,7 +22,6 @@ class UNREALENGINE1_API AMCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	//声明自身类的构造函数
 	AMCharacter();
 
 protected:
@@ -35,26 +34,26 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent *CameraComp; 
 
-	//声明指向USInteractionComponent类的指针，名为Interaction（注意include类的头文件）
+	//声明指向USInteractionComponent类的指针，名为InteractionComp（注意include类的头文件）
 	UPROPERTY(VisibleAnywhere, Category = "Interaction")
 	USInteractionComponent* InteractionComp;
 
 	//声明指向开火射击时的动画指针
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;;
+	UAnimMontage* AttackAnimComp;;
 
-	//声明指向血量变化的组件指针
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
+	//声明指向角色属性的组件指针
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Attributes")
 	USAttributeComponent* AttributeComp;
 
 	//声明自由相机视角的布尔变量
-	UPROPERTY(EditAnywhere, Category = "CameraConfiguration")
-	bool bFreeCameraMode = false;
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	bool bFreeCameraMode;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//声明控制函数，分别为向前，向右，开始跳跃，停止跳跃
+	//声明各个控制操作函数
 	UFUNCTION()
 	void MoveForward(float value);
 
@@ -76,22 +75,24 @@ protected:
 	UFUNCTION()
 	void DashFire();
 
+	//延迟射击所调用函数，内部逻辑函数，无需暴露给蓝图使用
+	void Fire_TimeElapsed();
+
 	//开火延迟计时器句柄
 	FTimerHandle TimerHandle_Fire;
 
-	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1/2/3
-	//继承逻辑为AActor->AMyProjectile->ProjectileClass1
+	//声明一个指向AMyProjectile类的子类的指针，名为ProjectileClass1
 	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<AMyProjectile> ProjectileClass1;
 
+	//声明一个指向AProjectileBase类的子类的指针，名为ProjectileClass2
 	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<AProjectileBase> ProjectileClass2;
 
+	//声明一个指向ADashProjectile类的子类的指针，名为ProjectileClass3
 	UPROPERTY(EditDefaultsOnly, Category = Attack)
 	TSubclassOf<ADashProjectile> ProjectileClass3;
 	
-	//延迟射击所调用函数，内部逻辑函数，无需暴露给蓝图使用
-	void Fire_TimeElapsed();
 
 public:	
 	// Called every frame

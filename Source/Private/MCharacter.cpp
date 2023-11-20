@@ -49,6 +49,8 @@ AMCharacter::AMCharacter()
 	//角色属性组件，包含健康值等
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
+
+	bFreeCameraMode = true;
 }
 
 // Called when the game starts or when spawned
@@ -75,24 +77,42 @@ void AMCharacter::MoveForward(float value)
 void AMCharacter::MoveRight(float value) 
 {
 	//Get controller's right vector
-	FVector ControllerRightDirection = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
-	if (value != 0 && GEngine)
+	if (bFreeCameraMode == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(ControllerRightDirection.ToString())));
-		AddMovementInput(ControllerRightDirection, value);
+		FVector ControllerRightDirection = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+		if (value != 0 && GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(ControllerRightDirection.ToString())));
+			AddMovementInput(ControllerRightDirection, value);
+		}
 	}
+	else
+	{
+		if (AMCharacter::bUseControllerRotationYaw == true)
+		{
+			FVector ControllerRightDirection = GetActorRightVector();
+			if (value != 0 && GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, FString::Printf(TEXT("CurrentMoveDirection: %s"), *(ControllerRightDirection.ToString())));
+				AddMovementInput(ControllerRightDirection, value);
+			}
+		}
+	}
+
 }
 
 //Not finished
 void AMCharacter::ToggleFreeCameraModeFree() 
 {
 	bFreeCameraMode = true;
+	AMCharacter::bUseControllerRotationYaw = false;
 }
 
 //Not finished
 void AMCharacter::ToggleFreeCameraModeLock() 
 {
 	bFreeCameraMode = false;
+	AMCharacter::bUseControllerRotationYaw = true;
 }
 
 void AMCharacter::Fire_TimeElapsed()
@@ -287,8 +307,8 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMCharacter::Fire);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &AMCharacter::PrimaryInteract);
 	PlayerInputComponent->BindAction("DashFire", IE_Pressed, this, &AMCharacter::DashFire);
-	PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeFree);
-	PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeLock);
+	PlayerInputComponent->BindAction("FreeCamera", IE_Released, this, &AMCharacter::ToggleFreeCameraModeFree);
+	PlayerInputComponent->BindAction("FreeCamera", IE_Pressed, this, &AMCharacter::ToggleFreeCameraModeLock);
 }
 
 void AMCharacter::PrimaryInteract()
@@ -302,7 +322,7 @@ void AMCharacter::PrimaryInteract()
 //射击开火函数的定义
 void AMCharacter::Fire()
 {
-	PlayAnimMontage(AttackAnim);
+	PlayAnimMontage(AttackAnimComp);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_Fire, this, &AMCharacter::Fire_TimeElapsed, 0.2f);
 		
