@@ -19,15 +19,6 @@ void ACameraDirector::BeginPlay()
 {
 	Super::BeginPlay();
     
-    //APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(this, 0);
-    //if (OurPlayerController)
-    //{
-    //    if (CameraOne != nullptr)
-    //        {
-    //            OurPlayerController->SetViewTarget(CameraOne);
-    //            CurrentCameraIndex = 0;
-    //        }
-    //}
 }
 
 void ACameraDirector::PostInitializeComponents()

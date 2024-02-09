@@ -10,7 +10,7 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class UStaticMeshComponent;
 class UParticleSystemComponent;
-//class UMaterialInstanceDynamic;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class UNREALENGINE1_API AMyProjectile : public AActor

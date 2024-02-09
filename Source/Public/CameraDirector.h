@@ -26,16 +26,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	//指定两个指向AActor类的指针，分别是Camera1和Camera2
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Configuration")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera | Camera Configuration")
 	AActor* CameraOne;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Configuration")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera | Camera Configuration")
 	AActor* CameraTwo;
 
 	//定义一个浮点型参数，作为两个Camera切换的间隔时间，其会随着Tick函数计算出的DeltaTime不断减小直至小于0，随后被重置，随后再不断减小
 	float TimeToNextCameraChange;
 
-	UPROPERTY(EditAnywhere, Category = "Camera Configuration")
+	UPROPERTY(EditAnywhere, Category = "Camera | Camera Configuration")
 	TArray<AActor*> CameraDropdownList;
 
 	//当前激活Camera序号

@@ -88,28 +88,12 @@ AMyProjectile::AMyProjectile()
 void AMyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
-
-void AMyProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor)
-	{
-		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
-		if (AttributeComp)
-		{
-			AttributeComp->ApplyHealthChange(-20.0f);
-			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
-			Destroy();
-		}
-	} 
 }
 
 // Called every frame
 void AMyProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // 初始化射击方向上发射物速度的函数。
@@ -149,4 +133,18 @@ void AMyProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	}
 
 	Destroy();//立即销毁
+}
+
+void AMyProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.0f);
+			UE_LOG(LogTemp, Error, TEXT("Health minus 20!"));
+			Destroy();
+		}
+	} 
 }

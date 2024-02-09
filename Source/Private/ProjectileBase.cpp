@@ -33,7 +33,6 @@ AProjectileBase::AProjectileBase()
 	MoveComp->InitialSpeed = 8000;
 	MoveComp->bShouldBounce = true;
 	MoveComp->Bounciness = 0.8f;
-	MoveComp->ProjectileGravityScale = 1.0f;
 
 	ImpactShakeInnerRadius = 800.0f;
 	ImpactShakeOuterRadius = 1500.0f;
